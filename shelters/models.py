@@ -19,6 +19,16 @@ class Shelter(models.Model):
         verbose_name='Місто',
     )
     address = models.CharField(max_length=200, verbose_name='Адреса')
+    delivery_service = models.CharField(
+        max_length=100,
+        blank=True,
+        verbose_name='Служба доставки',
+    )
+    delivery_branch = models.CharField(
+        max_length=200,
+        blank=True,
+        verbose_name='Номер або адреса відділення',
+    )
     phone = models.CharField(max_length=30, verbose_name='Номер телефону')
     email = models.EmailField(max_length=200, verbose_name='Електронна пошта')
     website = models.URLField(max_length=200, blank=True, verbose_name='Вебсайт')
@@ -52,3 +62,7 @@ class Shelter(models.Model):
     @property
     def is_verified(self):
         return self.status == self.ShelterStatus.APPROVED
+
+    @property
+    def has_delivery_details(self):
+        return bool(self.delivery_service and self.delivery_branch)

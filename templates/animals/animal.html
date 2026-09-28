@@ -179,6 +179,20 @@
                                             <p class="card-text text-body-secondary">{{ need.description }}</p>
                                         {% endif %}
 
+                                        {% if need.unit != 'money' and animal.shelter.has_delivery_details %}
+                                            <div class="small text-body-secondary mb-3">
+                                                <p class="fw-semibold mb-1">Куди надіслати допомогу</p>
+                                                <p class="mb-0">
+                                                    {{ animal.shelter.delivery_service }} ·
+                                                    {{ animal.shelter.city }}, {{ animal.shelter.delivery_branch }}
+                                                </p>
+                                                <p class="mb-0">
+                                                    Одержувач: {{ animal.shelter.name }},
+                                                    {{ animal.shelter.phone }}
+                                                </p>
+                                            </div>
+                                        {% endif %}
+
                                         <div class="mt-auto">
                                             <div class="d-flex justify-content-between small mb-2">
                                                 <span>Зібрано</span>
