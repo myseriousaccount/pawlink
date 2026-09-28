@@ -1,0 +1,238 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/animals.css' %}">
+{% endblock extra_css %}
+
+
+{% block content %}
+    <section class="py-4">
+        <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-4">
+            <div>
+                <p class="text-body-secondary mb-1">
+                    {% if animal.is_available %}Шукає родину{% else %}Інформація про тварину{% endif %}
+                </p>
+                <h1 class="display-5 fw-bold mb-0">{{ animal.name }}</h1>
+            </div>
+            <span class="badge rounded-pill {% if animal.is_available %}text-bg-info{% else %}text-bg-secondary{% endif %} fs-6">
+                {{ animal.get_adoption_status_display }}
+            </span>
+        </div>
+
+        <div class="row g-4 align-items-start">
+            <div class="col-lg-7">
+                <div id="animalGallery" class="carousel slide shadow-sm rounded overflow-hidden">
+                    <div class="carousel-inner rounded">
+
+                    <div class="carousel-item active">
+                        <div class="ratio ratio-4x3">
+                            <img
+                                src="{{ animal.main_photo.url }}"
+                                class="d-block w-100 h-100 object-fit-cover"
+                                alt="Головне фото {{ animal.name }}"
+                            >
+                        </div>
+                    </div>
+
+                    {% for photo in animal.images.all %}
+                        <div class="carousel-item">
+                            <div class="ratio ratio-4x3">
+                                <img
+                                    src="{{ photo.image.url }}"
+                                    class="d-block w-100 h-100 object-fit-cover"
+                                    alt="Фото {{ animal.name }}"
+                                >
+                            </div>
+                        </div>
+                    {% endfor %}
+
+                    </div>
+
+                    {% if animal.images.exists %}
+                        <button
+                            class="carousel-control-prev"
+                            type="button"
+                            data-bs-target="#animalGallery"
+                            data-bs-slide="prev"
+                        >
+                            <span class="carousel-control-prev-icon"></span>
+                            <span class="visually-hidden">Попереднє фото</span>
+                        </button>
+
+                        <button
+                            class="carousel-control-next"
+                            type="button"
+                            data-bs-target="#animalGallery"
+                            data-bs-slide="next"
+                        >
+                            <span class="carousel-control-next-icon"></span>
+                            <span class="visually-hidden">Наступне фото</span>
+                        </button>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="col-lg-5">
+
+                <form id="add-fav-form"
+                      action="{% url 'animals:favorite' animal_id=animal.id %}"
+                      method="post"
+                >
+                    {% csrf_token %}
+
+                    <div id="favorite-message"
+                         class="text-danger mb-3"
+                         role="alert"
+                         aria-live="assertive"></div>
+
+                    {% if  is_favorite %}
+                        <button type="submit">Прибрати з обраного</button>
+                    {% else %}
+                        <button type="submit">Додати в обране</button>
+                    {% endif %}
+                </form>
+
+                <div class="card border-0 shadow-sm mb-4">
+                    <div class="card-body p-4">
+                        <h2 class="h4 card-title mb-3">Про {{ animal.name }}</h2>
+
+                        <dl class="row mb-3">
+                            <dt class="col-sm-4">Вид</dt>
+                            <dd class="col-sm-8">{{ animal.get_species_display }}</dd>
+
+                            <dt class="col-sm-4">Вік</dt>
+                            <dd class="col-sm-8">{{ animal.age_display }}</dd>
+                        </dl>
+
+                        <p class="card-text">{{ animal.description }}</p>
+
+                        {% if animal.is_available %}
+                            <button type="button" class="btn btn-primary btn-lg w-100" data-bs-toggle="modal" data-bs-target="#modalForm">
+                                Подати заявку на адопцію
+                            </button>
+                        {% else %}
+                            <button type="button" class="btn btn-secondary btn-lg w-100" disabled>
+                                Заявки не приймаються
+                            </button>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body p-4">
+                        <h2 class="h4 card-title mb-3">Притулок</h2>
+                        <h3 class="h5">{{ animal.shelter.name }}</h3>
+                        <p class="text-body-secondary">
+                            {{ animal.shelter.city }}, {{ animal.shelter.address }}
+                        </p>
+
+                        <ul class="list-unstyled mb-0">
+                            <li class="mb-2">
+                                Телефон:
+                                <a href="tel:{{ animal.shelter.phone }}">{{ animal.shelter.phone }}</a>
+                            </li>
+                            <li class="mb-2">
+                                Email:
+                                <a href="mailto:{{ animal.shelter.email }}">{{ animal.shelter.email }}</a>
+                            </li>
+                            {% if animal.shelter.website %}
+                                <li>
+                                    <a href="{{ animal.shelter.website }}" target="_blank" rel="noopener noreferrer">
+                                        Відкрити сайт притулку
+                                    </a>
+                                </li>
+                            {% endif %}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="pb-5" aria-labelledby="animal-needs-title">
+        <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-3">
+            <div>
+                <h2 id="animal-needs-title" class="h3 mb-1">Потреби {{ animal.name }}</h2>
+                <p class="text-body-secondary mb-0">
+                    Допоможіть притулку забезпечити тварину всім необхідним.
+                </p>
+            </div>
+        </div>
+
+        <div class="row g-4">
+            {% for item in needs %}
+                {% with need=item.need %}
+                    {% if need.is_active %}
+                        {% with contributed=need.contributed_amount %}
+                            {% widthratio contributed need.target_amount 100 as progress_percent %}
+                            <div class="col-md-6 col-xl-4">
+                                <article class="card h-100 border-0 shadow-sm">
+                                    <div class="card-body d-flex flex-column p-4">
+                                        <div class="d-flex justify-content-between align-items-start gap-2 mb-3">
+                                            <span class="badge text-bg-light">{{ need.get_category_display }}</span>
+                                            <span class="badge text-bg-secondary">{{ need.get_frequency_display }}</span>
+                                        </div>
+
+                                        <h3 class="h5 card-title">{{ need.name }}</h3>
+                                        {% if need.description %}
+                                            <p class="card-text text-body-secondary">{{ need.description }}</p>
+                                        {% endif %}
+
+                                        <div class="mt-auto">
+                                            <div class="d-flex justify-content-between small mb-2">
+                                                <span>Зібрано</span>
+                                                <strong>
+                                                    {{ contributed|floatformat:"-2" }} / {{ need.target_amount|floatformat:"-2" }}
+                                                    {{ need.get_unit_display }}
+                                                </strong>
+                                            </div>
+
+                                            <div class="progress mb-3" role="progressbar"
+                                                 aria-label="Прогрес потреби {{ need.name }}"
+                                                 aria-valuemin="0" aria-valuemax="100"
+                                                 aria-valuenow="{% if contributed >= need.target_amount %}100{% else %}{{ progress_percent }}{% endif %}">
+                                                <div class="progress-bar"
+                                                     style="width: {% if contributed >= need.target_amount %}100{% else %}{{ progress_percent }}{% endif %}%">
+                                                </div>
+                                            </div>
+
+                                            {% if contributed >= need.target_amount %}
+                                                <span class="badge text-bg-success">Потребу закрито</span>
+                                            {% else %}
+                                                <button
+                                                        type="button"
+                                                        class="btn btn-outline-primary w-100"
+                                                        data-bs-toggle="modal"
+                                                        data-bs-target="#contribModalForm-{{ need.id }}"
+                                                >
+                                                    Допомогти
+                                                </button>
+
+                                                {% include 'support/contribution_modal_form.html' with contribution_form=item.form %}
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </article>
+                            </div>
+                        {% endwith %}
+                    {% endif %}
+                {% endwith %}
+            {% empty %}
+                <div class="col-12">
+                    <div class="alert alert-light border mb-0" role="status">
+                        Для цієї тварини наразі немає активних потреб.
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </section>
+
+
+    {% include 'adoptions/adoption_modal_form.html' %}
+{% endblock %}
+{% block extra_js %}
+    <script src="{% static 'js/addToFavorite.js' %}"></script>
+    <script src="{% static 'js/adoptionApplication.js' %}"></script>
+    <script src="{% static 'js/contributionForm.js' %}"></script>
+{% endblock %}

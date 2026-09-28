@@ -38,7 +38,6 @@ class Animal(models.Model):
     )
 
     main_photo = models.ImageField(
-        blank=True,
         upload_to='animals/',
         verbose_name='Фото тварини'
     )
@@ -75,6 +74,34 @@ class Animal(models.Model):
     @property
     def age_remaining_months(self):
         return self.age % 12
+
+    @property
+    def age_display(self):
+        def word_form(number, one, few, many):
+            if 11 <= number % 100 <= 14:
+                return many
+            if number % 10 == 1:
+                return one
+            if number % 10 in (2, 3, 4):
+                return few
+            return many
+
+        years = self.age_years
+        months = self.age_remaining_months
+
+        if not years and not months:
+            return 'Менше місяця'
+
+        if not years:
+            return f'{months} {word_form(months, "місяць", "місяці", "місяців")}'
+
+        years_text = f'{years} {word_form(years, "рік", "роки", "років")}'
+
+        if not months:
+            return years_text
+
+        months_text = f'{months} {word_form(months, "місяць", "місяці", "місяців")}'
+        return f'{years_text} {months_text}'
 
 
 class AnimalImage(models.Model):
