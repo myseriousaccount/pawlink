@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <section class="py-5">
+        <div class="text-center col-lg-8 mx-auto mb-5">
+            <h1 class="display-5 fw-bold mb-3">Контакти</h1>
+            <p class="lead text-body-secondary">
+                Оберіть потрібний спосіб зв’язку залежно від вашого запитання.
+            </p>
+        </div>
+
+        <div class="row g-4 justify-content-center">
+            <div class="col-md-6">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body p-4 p-lg-5">
+                        <h2 class="h4">Питання про тварину</h2>
+                        <p class="text-body-secondary">
+                            Якщо вас цікавить адопція, стан здоров’я або характер
+                            конкретної тварини, зверніться безпосередньо до її притулку.
+                            Контакти розміщені на сторінці кожної тварини.
+                        </p>
+                        <a class="btn btn-outline-primary" href="{% url 'animals:animals' %}">
+                            Перейти до тварин
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body p-4 p-lg-5">
+                        <h2 class="h4">Питання про Pawlink</h2>
+                        <p class="text-body-secondary">
+                            З питань роботи платформи, реєстрації притулку або
+                            технічних проблем напишіть команді підтримки.
+                        </p>
+                        <a class="btn btn-outline-primary" href="mailto:support@pawlink.ua">
+                            support@pawlink.ua
+                        </a>
+                        <p class="small text-body-secondary mt-3 mb-0">
+                            Це тестова контактна адреса для поточної версії проєкту.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}

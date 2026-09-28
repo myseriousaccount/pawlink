@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <section class="py-5">
+        <div class="text-center col-lg-8 mx-auto mb-5">
+            <h1 class="display-5 fw-bold mb-3">Про Pawlink</h1>
+            <p class="lead text-body-secondary">
+                Pawlink об’єднує людей, які шукають домашнього улюбленця,
+                перевірені притулки та благодійників, готових допомагати тваринам.
+            </p>
+        </div>
+
+        <div class="row g-4 mb-5">
+            <div class="col-md-4">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body p-4">
+                        <h2 class="h4">Допомагаємо знайти родину</h2>
+                        <p class="text-body-secondary mb-0">
+                            На сторінках тварин можна дізнатися їхню історію,
+                            переглянути фотографії та зв’язатися з притулком.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body p-4">
+                        <h2 class="h4">Підтримуємо притулки</h2>
+                        <p class="text-body-secondary mb-0">
+                            Притулки публікують інформацію про своїх підопічних
+                            і повідомляють, якої допомоги вони потребують.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body p-4">
+                        <h2 class="h4">Робимо допомогу зрозумілою</h2>
+                        <p class="text-body-secondary mb-0">
+                            Користувачі бачать конкретні потреби тварин і можуть
+                            обрати зручний спосіб підтримки.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="text-center">
+            <a class="btn btn-primary btn-lg me-2" href="{% url 'animals:animals' %}">
+                Переглянути тварин
+            </a>
+            <a class="btn btn-outline-secondary btn-lg" href="{% url 'shelters:shelters' %}">
+                Переглянути притулки
+            </a>
+        </div>
+    </section>
+{% endblock %}
