@@ -1,6 +1,6 @@
 from django.contrib.auth.models import AbstractUser
+from django.db.models.functions import Lower
 from django.db import models
-
 
 class User(AbstractUser):
     class UserRole(models.TextChoices):
@@ -15,4 +15,12 @@ class User(AbstractUser):
 
     @property
     def is_shelter(self):
-        return self.role == self.Role.SHELTER
+        return self.role == self.UserRole.SHELTER
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                Lower('email'),
+                name='unique_user_email_case_insensitive',
+            ),
+        ]
