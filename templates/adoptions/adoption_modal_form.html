@@ -1,0 +1,56 @@
+{% load django_bootstrap5 %}
+
+<div
+    class="modal fade"
+    id="modalForm"
+    tabindex="-1"
+    aria-labelledby="modalFormLabel"
+    aria-hidden="true"
+>
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title fs-5" id="modalFormLabel">
+                    Заявка на адопцію
+                </h2>
+
+                <button
+                    type="button"
+                    class="btn-close"
+                    data-bs-dismiss="modal"
+                    aria-label="Закрити"
+                ></button>
+            </div>
+
+            <div class="modal-body">
+                <form id="adoption-form"
+                      action="{% url 'adoptions:application' animal_id=animal.id %}"
+                      method="post">
+                    {% csrf_token %}
+
+                    <div id="application-message"
+                         class="text-danger mb-3"
+                         role="alert"
+                         aria-live="assertive"></div>
+
+                    {% for field in application_form %}
+                        <div class="mb-3">
+
+                            {% bootstrap_field field %}
+
+                            <div id="{{ field.name }}-error"
+                                 class="field-error text-danger small"
+                                 aria-live="polite"></div>
+                        </div>
+                    {% endfor %}
+
+                    <button type="submit" class="btn btn-primary btn-lg w-100">
+                        Подати заявку
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+

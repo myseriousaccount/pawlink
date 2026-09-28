@@ -2,4 +2,6 @@ from django.urls import path
 from . import views
 
 app_name = 'adoptions'
-urlpatterns = []
+urlpatterns = [
+    path('apply/<int:animal_id>/', views.application, name='application'),
+]
