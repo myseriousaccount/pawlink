@@ -1,7 +1,7 @@
 from django.db import models
 from django.conf import settings
 
-from django.core.validators import MinValueValidator
+from django.core.validators import MinValueValidator, FileExtensionValidator
 from django.db.models.aggregates import Sum
 from django.utils import timezone
 from decimal import Decimal
@@ -133,7 +133,7 @@ class SupportContribution(models.Model):
         related_name='contributions',
         verbose_name='Потреба',
     )
-    amount = models.DecimalField(
+    amount =  models.DecimalField(
         max_digits=10,
         decimal_places=2,
         validators=[MinValueValidator(Decimal('0.01'))],
@@ -149,10 +149,10 @@ class SupportContribution(models.Model):
         verbose_name='Внесок підтверджено',
     )
 
-    proof = models.ImageField(
+    proof = models.FileField(
         upload_to='contributions/proofs/',
-        blank=True,
         verbose_name='Фото підтвердження допомоги',
+        validators=[FileExtensionValidator(allowed_extensions=['pdf', 'png', 'jpg', 'jpeg'])],
     )
 
     class Meta:

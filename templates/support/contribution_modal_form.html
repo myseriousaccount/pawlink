@@ -1,0 +1,67 @@
+{% load django_bootstrap5 %}
+
+<div
+    class="modal fade"
+    id="contribModalForm-{{ need.id }}"
+    tabindex="-1"
+    aria-labelledby="contribModalLabel-{{ need.id }}"
+    aria-hidden="true"
+>
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title fs-5" id="contribModalLabel-{{ need.id }}">
+                    Підтвердження допомоги: {{ need.name }}
+                </h2>
+
+                <button
+                    type="button"
+                    class="btn-close"
+                    data-bs-dismiss="modal"
+                    aria-label="Закрити"
+                ></button>
+            </div>
+
+            <div class="modal-body">
+                <p>Уже допомогли? Вкажіть обсяг допомоги та додайте квитанцію або фото підтвердження.</p>
+
+                <form class="contribution-form"
+                      action="{% url 'support:contribution' need_id=need.id %}"
+                      method="post"
+                      enctype="multipart/form-data"
+                >
+                    {% csrf_token %}
+
+                    <div class="contribution-message text-danger mb-3"
+                         role="alert"
+                         aria-live="assertive"></div>
+
+                    {% for field in contribution_form %}
+                        <div class="mb-3">
+                            {% bootstrap_field field %}
+
+                            {% if field.name == 'amount' %}
+                                <div class="form-text">
+                                    Одиниця вимірювання: {{ need.get_unit_display }}.
+                                </div>
+                            {% endif %}
+
+                            <div
+                                 data-error-for="{{ field.name }}"
+                                 class="field-error text-danger small"
+                                 aria-live="polite">
+                            </div>
+
+                        </div>
+                    {% endfor %}
+
+                    <button type="submit" class="btn btn-primary btn-lg w-100">
+                        Надіслати на перевірку
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
