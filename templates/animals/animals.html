@@ -16,6 +16,34 @@
             </p>
         </div>
 
+        <form id="animals-filter" method="get">
+
+            <label for="species">Вид тварини</label>
+            <select id="species" name="species" class="form-select" aria-label="Default select example">
+                <option value="">Усі види</option>
+                {% for value, label in species_choices %}
+                    <option value="{{ value }}" {% if selected_species == value %}selected{% endif %}>
+                        {{ label }}
+                    </option>
+                {% endfor %}
+            </select>
+
+            <label for="city">Місто</label>
+            <select id="city" name="city" class="form-select" aria-label="Default select example">
+                <option value="">Усі міста</option>
+                {% for value, label in city_choices %}
+                    <option value="{{ value }}" {% if selected_city == value %}selected{% endif %}>
+                        {{ label }}
+                    </option>
+                {% endfor %}
+            </select>
+
+            <div class="btn-group" role="group" aria-label="Default button group">
+                <button type="submit" class="btn btn-outline-primary">Показати</button>
+                <a class="btn btn-outline-primary" href="{% url 'animals:animals' %}">Скинути фільтри</a>
+            </div>
+        </form>
+
         <div class="row row-cols-1 row-cols-md-2 row-cols-xl-3 g-4">
             {% for animal in animals %}
                 <div class="col">
@@ -57,13 +85,27 @@
                         </div>
                     </article>
                 </div>
+
             {% empty %}
-                <div class="col-12 w-100">
-                    <div class="alert alert-light border text-center py-4" role="status">
-                        Наразі у списку немає тварин. Перевірте сторінку пізніше.
+                {% if selected_city or selected_species %}
+                    <div class="col-12 w-100">
+                        <div class="alert alert-light border text-center py-4" role="status">
+                            За вибраним фільтром тварин не знайдено.
+                        </div>
                     </div>
-                </div>
+                {% else %}
+                    <div class="col-12 w-100">
+                        <div class="alert alert-light border text-center py-4" role="status">
+                            Наразі у списку немає тварин. Перевірте сторінку пізніше.
+                        </div>
+                    </div>
+                {% endif %}
+
             {% endfor %}
         </div>
     </section>
+{% endblock %}
+
+{% block extra_js %}
+    <script src="{% static 'js/filterAnimals.js' %}"></script>
 {% endblock %}

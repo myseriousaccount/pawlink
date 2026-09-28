@@ -2,6 +2,9 @@ from django.db import models
 from django.conf import settings
 
 class Shelter(models.Model):
+    class City(models.TextChoices):
+        KYIV = 'Київ', 'Київ'
+
     class ShelterStatus(models.TextChoices):
         PENDING = 'pending', 'Очікує перевірки'
         APPROVED = 'approved', 'Перевірений'
@@ -10,7 +13,11 @@ class Shelter(models.Model):
 
     name = models.CharField(max_length=200, verbose_name='Назва притулку')
     description = models.TextField(verbose_name='Опис притулку')
-    city = models.CharField(max_length=200, verbose_name='Місто')
+    city = models.CharField(
+        max_length=200,
+        choices=City.choices,
+        verbose_name='Місто',
+    )
     address = models.CharField(max_length=200, verbose_name='Адреса')
     phone = models.CharField(max_length=30, verbose_name='Номер телефону')
     email = models.EmailField(max_length=200, verbose_name='Електронна пошта')

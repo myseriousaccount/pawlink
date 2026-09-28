@@ -5,6 +5,7 @@ from django.contrib import messages
 from django.views.decorators.http import require_POST
 
 from adoptions.forms import AdoptionApplicationForm
+from shelters.models import Shelter
 from support.forms import SupportContributionForm
 from animals.models import Animal
 
@@ -12,11 +13,26 @@ from animals.models import Animal
 def animals_list(request):
     animals = Animal.objects.all()
 
+    # фільтрація на сторінці
+    species = request.GET.get('species', '').strip()
+    city = request.GET.get('city', '').strip()
+
+    if species:
+        animals = animals.filter(species=species)
+    if city:
+        animals = animals.filter(shelter__city=city)
+
+
+
     return render(request, 'animals/animals.html',context={
         'title': 'Тварини',
         'page': 'animals',
         'app': 'animals',
-        'animals': animals
+        'animals': animals,
+        'selected_species': species,
+        'selected_city': city,
+        'species_choices': Animal.Species.choices,
+        'city_choices': Shelter.City.choices,
     })
 
 def animal_detail(request, animal_id):

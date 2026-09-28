@@ -56,7 +56,6 @@ def login(request):
 
             return JsonResponse({
                 'success': True,
-                'message': 'Вхід виконано успішно',
                 'redirect_url': reverse('core:home')
             })
 
