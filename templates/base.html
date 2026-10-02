@@ -13,13 +13,13 @@
     {% block extra_css %}{% endblock %}
 </head>
 
-<body>
+<body class="d-flex flex-column min-vh-100">
     <!-- HEADER -->
     {% include '_layouts/header.html' %}
     <!-- NAVIGATION -->
     {% include '_layouts/navbar.html' %}
 
-    <main class="container">
+    <main class="container flex-grow-1">
         <!-- DJANGO MESSAGES -->
         {% if messages %}
             <div class="mt-3" aria-live="polite" aria-atomic="true">
