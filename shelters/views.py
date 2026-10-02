@@ -7,14 +7,6 @@ from django.urls import reverse
 from shelters.forms import ShelterForm
 from shelters.models import Shelter
 
-
-def shelters_list(request):
-    return render(request, 'shelters/shelters.html',context={
-        'title': 'Притулки',
-        'page': 'shelters',
-        'app': 'shelters'
-    })
-
 def edit_shelter(request):
     if not request.user.is_authenticated:
         messages.info(request, 'Увійдіть, щоб редагувати профіль притулку.')
