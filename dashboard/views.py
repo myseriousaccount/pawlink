@@ -43,7 +43,6 @@ def shelter_dashboard(request):
         'pending_contributions_count': pending_contributions_count,
     })
 
-
 # GET
 def user_dashboard(request):
 

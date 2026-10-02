@@ -123,7 +123,6 @@ def manage_applications(request):
         'adoption_status_choices': Animal.Status.choices,
     })
 
-
 @require_POST
 def save_shelter_notes(request, application_id):
 
@@ -168,10 +167,6 @@ def save_shelter_notes(request, application_id):
         messages.success(request, 'Нотатку до заявки видалено.')
 
     return redirect('adoptions:manage_applications')
-
-
-
-
 
 @require_POST
 def review_application(request, application_id):
