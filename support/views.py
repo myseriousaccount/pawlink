@@ -131,8 +131,6 @@ def review_contribution(request, contribution_id):
 
     return redirect('support:manage_contributions')
 
-
-
 @require_POST
 def contribution(request, need_id):
 
