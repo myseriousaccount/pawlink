@@ -107,15 +107,17 @@
                         </div>
                     </dl>
 
-                    {% if animal.is_available %}
-                        <button type="button" class="btn btn-primary btn-lg w-100"
-                                data-bs-toggle="modal" data-bs-target="#modalForm">
-                            Подати заявку на адопцію
-                        </button>
-                    {% else %}
-                        <button type="button" class="btn btn-secondary btn-lg w-100" disabled>
-                            Заявки не приймаються
-                        </button>
+                    {% if not user.is_shelter %}
+                        {% if animal.is_available %}
+                            <button type="button" class="btn btn-primary btn-lg w-100"
+                                    data-bs-toggle="modal" data-bs-target="#modalForm">
+                                Подати заявку на адопцію
+                            </button>
+                        {% else %}
+                            <button type="button" class="btn btn-secondary btn-lg w-100" disabled>
+                                Заявки не приймаються
+                            </button>
+                        {% endif %}
                     {% endif %}
                 </div>
 
@@ -234,16 +236,18 @@
                                             {% if contributed >= need.target_amount %}
                                                 <span class="badge text-bg-success">Потребу закрито</span>
                                             {% elif need.can_accept_contributions %}
-                                                <button
-                                                        type="button"
-                                                        class="btn btn-outline-primary w-100"
-                                                        data-bs-toggle="modal"
-                                                        data-bs-target="#contribModalForm-{{ need.id }}"
-                                                >
-                                                    Допомогти
-                                                </button>
+                                                {% if not user.is_shelter %}
+                                                    <button
+                                                            type="button"
+                                                            class="btn btn-outline-primary w-100"
+                                                            data-bs-toggle="modal"
+                                                            data-bs-target="#contribModalForm-{{ need.id }}"
+                                                    >
+                                                        Допомогти
+                                                    </button>
 
-                                                {% include 'support/contribution_modal_form.html' with contribution_form=item.form %}
+                                                    {% include 'support/contribution_modal_form.html' with contribution_form=item.form %}
+                                                {% endif %}
                                             {% else %}
                                                 <span class="badge text-bg-secondary">Допомога тимчасово недоступна</span>
                                             {% endif %}
@@ -265,7 +269,9 @@
     </section>
 
 
-    {% include 'adoptions/adoption_modal_form.html' %}
+    {% if not user.is_shelter and animal.is_available %}
+        {% include 'adoptions/adoption_modal_form.html' %}
+    {% endif %}
 {% endblock %}
 {% block extra_js %}
     <script src="{% static 'js/addToFavorite.js' %}?v=2"></script>

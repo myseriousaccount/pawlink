@@ -14,7 +14,9 @@ from animals.models import Animal
 
 
 def animals_list(request):
-    animals = Animal.objects.exclude(adoption_status=Animal.Status.ARCHIVED)
+    animals = Animal.objects.filter(
+        shelter__status=Shelter.ShelterStatus.APPROVED,
+    ).exclude(adoption_status=Animal.Status.ARCHIVED)
 
     # фільтрація на сторінці
     species = request.GET.get('species', '').strip()
@@ -37,7 +39,11 @@ def animals_list(request):
     })
 
 def animal_detail(request, animal_id):
-    animal = get_object_or_404(Animal, pk=animal_id)
+    animal = get_object_or_404(
+        Animal,
+        pk=animal_id,
+        shelter__status=Shelter.ShelterStatus.APPROVED,
+    )
 
     application_form = AdoptionApplicationForm()
     needs_with_forms = []
@@ -134,7 +140,11 @@ def add_to_favorite(request, animal_id):
             'message':'Обране доступне лише звичайним користувачам.'
         }, status=403)
 
-    animal = get_object_or_404(Animal, pk=animal_id)
+    animal = get_object_or_404(
+        Animal,
+        pk=animal_id,
+        shelter__status=Shelter.ShelterStatus.APPROVED,
+    )
 
     is_favorite = animal.favorited_by.filter(
         pk=request.user.pk

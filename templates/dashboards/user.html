@@ -81,9 +81,13 @@
                             {% for contribution in contributions %}
                                 <tr>
                                     <td class="ps-4">
-                                        <a href="{% url 'animals:animal' animal_id=contribution.need.animal_id %}">
+                                        {% if contribution.need.animal.shelter.is_verified %}
+                                            <a href="{% url 'animals:animal' animal_id=contribution.need.animal_id %}">
+                                                {{ contribution.need.animal.name }}
+                                            </a>
+                                        {% else %}
                                             {{ contribution.need.animal.name }}
-                                        </a>
+                                        {% endif %}
                                         <span class="d-block small text-body-secondary">{{ contribution.need.name }}</span>
                                     </td>
                                     <td class="text-nowrap">{{ contribution.amount|floatformat:"-2" }} {{ contribution.need.get_unit_display }}</td>
@@ -114,7 +118,11 @@
                             <div class="card-body p-4">
                                 <div class="d-flex flex-wrap justify-content-between align-items-start gap-2 mb-2">
                                     <h3 class="h5 mb-0">
-                                        <a href="{% url 'animals:animal' animal_id=application.animal_id %}">{{ application.animal.name }}</a>
+                                        {% if application.animal.shelter.is_verified %}
+                                            <a href="{% url 'animals:animal' animal_id=application.animal_id %}">{{ application.animal.name }}</a>
+                                        {% else %}
+                                            {{ application.animal.name }}
+                                        {% endif %}
                                     </h3>
                                     <span class="badge {% if application.status == 'approved' %}text-bg-success{% elif application.status == 'rejected' %}text-bg-secondary{% else %}text-bg-warning{% endif %}">
                                         {{ application.get_status_display }}

@@ -25,7 +25,11 @@ def application(request, animal_id):
         }, status=401)
 
 
-    animal = get_object_or_404(Animal, pk=animal_id)
+    animal = get_object_or_404(
+        Animal,
+        pk=animal_id,
+        shelter__status=Shelter.ShelterStatus.APPROVED,
+    )
 
     if animal.adoption_status != Animal.Status.AVAILABLE:
         return JsonResponse({
@@ -37,7 +41,7 @@ def application(request, animal_id):
         return JsonResponse({
             'success': False,
             'message': 'Притулок не може подати заявку.',
-        }, status=409)
+        }, status=403)
 
     form = AdoptionApplicationForm(request.POST)
 

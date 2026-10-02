@@ -54,18 +54,23 @@ def user_dashboard(request):
     if request.user.is_shelter:
         raise PermissionDenied('Панель користувача доступна лише звичайним користувачам.')
 
-    favorites = request.user.favorites.select_related('shelter').order_by('name')
+    favorites = (
+        request.user.favorites
+        .filter(shelter__status=Shelter.ShelterStatus.APPROVED)
+        .select_related('shelter')
+        .order_by('name')
+    )
 
     contributions = (
         SupportContribution.objects
         .filter(supporter=request.user)
-        .select_related('need__animal')
+        .select_related('need__animal__shelter')
         .order_by('-created_at')
     )
     applications = (
         AdoptionApplication.objects
         .filter(user=request.user)
-        .select_related('animal')
+        .select_related('animal__shelter')
         .order_by('-created_at')
     )
     updates = (
@@ -73,6 +78,7 @@ def user_dashboard(request):
         .filter(
             animal__needs__contributions__supporter=request.user,
             animal__needs__contributions__status=SupportContribution.ContributionStatus.APPROVED,
+            animal__shelter__status=Shelter.ShelterStatus.APPROVED,
         )
         .select_related('animal')
         .distinct()

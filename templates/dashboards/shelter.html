@@ -27,6 +27,7 @@
             </div>
         </div>
 
+        {% if shelter.is_verified %}
         <div class="row g-3 mb-4" aria-label="Статистика притулку">
             <div class="col-12 col-md-4">
                 <a href="{% url 'animals:manage_animals' %}"
@@ -112,6 +113,12 @@
                 </div>
             </div>
         </div>
+        {% else %}
+            <div class="alert alert-info mb-0" role="status">
+                Поки профіль притулку має статус «{{ shelter.get_status_display }}», дії керування недоступні.
+                Ви можете оновити дані профілю. Керування тваринами, заявками та допомогою стане доступним після схвалення.
+            </div>
+        {% endif %}
     </section>
 
 {% endblock %}

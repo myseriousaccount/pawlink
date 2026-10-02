@@ -143,8 +143,17 @@ def contribution(request, need_id):
             'redirect_url': reverse('accounts:login'),
         }, status=401)
 
+    if request.user.is_shelter:
+        return JsonResponse({
+            'success': False,
+            'message': 'Надсилати підтвердження допомоги можуть лише звичайні користувачі.',
+        }, status=403)
 
-    need = get_object_or_404(Need, pk=need_id)
+    need = get_object_or_404(
+        Need,
+        pk=need_id,
+        animal__shelter__status=Shelter.ShelterStatus.APPROVED,
+    )
 
     if not need.can_accept_contributions:
         if need.unit == Need.Unit.MONEY and not need.animal.shelter.has_payment_details:

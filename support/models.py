@@ -125,7 +125,13 @@ class Need(models.Model):
         has_payment_details = (
             self.unit != self.Unit.MONEY or self.animal.shelter.has_payment_details
         )
-        return self.is_active and not self.is_fulfilled and has_payment_details
+        return (
+            self.is_active
+            and self.animal.shelter.is_verified
+            and self.animal.adoption_status != self.animal.Status.ARCHIVED
+            and not self.is_fulfilled
+            and has_payment_details
+        )
 
 
 
