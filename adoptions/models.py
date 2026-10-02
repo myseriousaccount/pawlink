@@ -21,9 +21,15 @@ class AdoptionApplication(models.Model):
         verbose_name="Дата створення заявки"
     )
     updated_at = models.DateTimeField(auto_now=True)
+
     shelter_comment = models.TextField(
         blank=True,
         verbose_name="Коментар від притулку"
+    )
+
+    shelter_notes = models.TextField(
+        blank=True,
+        verbose_name="Нотатки притулку"
     )
 
     animal = models.ForeignKey(

@@ -6,6 +6,12 @@ from django.db.models.aggregates import Sum
 from django.utils import timezone
 from decimal import Decimal
 
+from django.core.files.storage import FileSystemStorage
+
+
+def private_proof_storage():
+    return FileSystemStorage(location=settings.PRIVATE_MEDIA_ROOT)
+
 
 class Need(models.Model):
     class Category(models.TextChoices):
@@ -81,7 +87,7 @@ class Need(models.Model):
 
     @property
     def contributed_amount(self):
-        contributions = self.contributions.filter(is_approved=True)
+        contributions = self.contributions.filter(status=SupportContribution.ContributionStatus.APPROVED)
 
         if self.frequency == self.Frequency.MONTHLY:
             today = timezone.localdate()
@@ -116,11 +122,19 @@ class Need(models.Model):
     @property
     def can_accept_contributions(self):
         """Чи можна зараз приймати нові внески."""
-        return self.is_active and not self.is_fulfilled
+        has_payment_details = (
+            self.unit != self.Unit.MONEY or self.animal.shelter.has_payment_details
+        )
+        return self.is_active and not self.is_fulfilled and has_payment_details
 
 
 
 class SupportContribution(models.Model):
+    class ContributionStatus(models.TextChoices):
+        PENDING = 'pending', 'Очікує перевірки'
+        APPROVED = 'approved', 'Підтверджено'
+        REJECTED = 'rejected', 'Відхилено'
+
     supporter = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.PROTECT,
@@ -144,14 +158,18 @@ class SupportContribution(models.Model):
         auto_now_add=True,
         verbose_name='Дата створення',
     )
-    is_approved = models.BooleanField(
-        default=False,
-        verbose_name='Внесок підтверджено',
+
+    status = models.CharField(
+        max_length=30,
+        choices=ContributionStatus.choices,
+        default=ContributionStatus.PENDING,
+        verbose_name='Статус внеску'
     )
 
     proof = models.FileField(
         upload_to='contributions/proofs/',
-        verbose_name='Фото підтвердження допомоги',
+        verbose_name='Файл підтвердження допомоги',
+        storage=private_proof_storage,
         validators=[FileExtensionValidator(allowed_extensions=['pdf', 'png', 'jpg', 'jpeg'])],
     )
 

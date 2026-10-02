@@ -23,14 +23,15 @@ $(document).ready(function () {
 
             success: function (response) {
                 // console.log('Відповідь сервера отримано');
-                $('#register-message').text(response.message);
                 window.location.href = response.redirect_url;
             },
 
             error: function (xhr) {
                 const errors = xhr.responseJSON?.errors;
 
-                $('#register-message').text(errors ? 'Виправте помилки у формі.' : 'Не вдалося завершити запит.');
+                if (!errors) {
+                    $('#register-message').text('Не вдалося завершити запит.');
+                }
 
                 if (errors) {
                     for (const field in errors) {

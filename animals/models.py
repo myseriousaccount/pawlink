@@ -1,3 +1,4 @@
+from django.core.validators import FileExtensionValidator
 from django.db import models
 from django.conf import settings
 
@@ -16,12 +17,22 @@ class Animal(models.Model):
         ADOPTED = 'adopted', 'Усиновлена'
         ARCHIVED = 'archived', 'В архіві'
 
+    class Sex(models.TextChoices):
+        MALE = "male", "Хлопчик",
+        FEMALE = "female", "Дівчинка"
+
     name = models.CharField(max_length=150, verbose_name="Ім'я")
     age = models.PositiveIntegerField(
         verbose_name='Вік у місяцях',
         help_text='Вкажіть приблизний вік у повних місяцях. Наприклад, 24 – це 2 роки.',
     )
-
+    sex = models.CharField(
+        max_length=12,
+        choices=Sex.choices,
+        null=True,
+        blank=False,
+        verbose_name="Стать"
+    )
     species = models.CharField(
         max_length=50,
         choices=Species.choices,
@@ -39,7 +50,8 @@ class Animal(models.Model):
 
     main_photo = models.ImageField(
         upload_to='animals/',
-        verbose_name='Фото тварини'
+        verbose_name='Фото тварини',
+        validators=[FileExtensionValidator(allowed_extensions=['jpg', 'jpeg', 'png'])],
     )
 
     shelter = models.ForeignKey(
@@ -103,11 +115,11 @@ class Animal(models.Model):
         months_text = f'{months} {word_form(months, "місяць", "місяці", "місяців")}'
         return f'{years_text} {months_text}'
 
-
 class AnimalImage(models.Model):
     image = models.ImageField(
         upload_to='animals/gallery/',
-        verbose_name='Фото'
+        verbose_name='Фото',
+        validators = [FileExtensionValidator(['jpg', 'jpeg', 'png'])],
     )
 
     animal = models.ForeignKey(

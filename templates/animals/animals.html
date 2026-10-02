@@ -7,105 +7,106 @@
 
 
 {% block content %}
-    <section class="py-5">
-        <div class="text-center mb-5">
-            <h1 class="display-5 fw-bold">Тварини шукають родину</h1>
+    <section class="animals-catalog py-4 py-lg-5">
+        <div class="text-center mb-4 mb-lg-5">
+            <h1 class="display-5 fw-bold mb-3">Тварини шукають родину</h1>
             <p class="lead text-body-secondary col-lg-7 mx-auto mb-0">
                 Познайомтеся з підопічними перевірених притулків і дізнайтеся,
                 хто зараз готовий до адопції.
             </p>
         </div>
 
-        <form id="animals-filter" method="get">
+        <form id="animals-filter" method="get" class="catalog-filter mb-4 mb-lg-5" aria-label="Фільтри тварин">
+            <div class="row g-3 align-items-end">
+                <div class="col-12 col-md-6 col-lg-4">
+                    <label for="species" class="form-label fw-semibold">Вид тварини</label>
+                    <select id="species" name="species" class="form-select">
+                        <option value="">Усі види</option>
+                        {% for value, label in species_choices %}
+                            <option value="{{ value }}" {% if selected_species == value %}selected{% endif %}>
+                                {{ label }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
 
-            <label for="species">Вид тварини</label>
-            <select id="species" name="species" class="form-select" aria-label="Default select example">
-                <option value="">Усі види</option>
-                {% for value, label in species_choices %}
-                    <option value="{{ value }}" {% if selected_species == value %}selected{% endif %}>
-                        {{ label }}
-                    </option>
-                {% endfor %}
-            </select>
+                <div class="col-12 col-md-6 col-lg-4">
+                    <label for="city" class="form-label fw-semibold">Місто</label>
+                    <select id="city" name="city" class="form-select">
+                        <option value="">Усі міста</option>
+                        {% for value, label in city_choices %}
+                            <option value="{{ value }}" {% if selected_city == value %}selected{% endif %}>
+                                {{ label }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
 
-            <label for="city">Місто</label>
-            <select id="city" name="city" class="form-select" aria-label="Default select example">
-                <option value="">Усі міста</option>
-                {% for value, label in city_choices %}
-                    <option value="{{ value }}" {% if selected_city == value %}selected{% endif %}>
-                        {{ label }}
-                    </option>
-                {% endfor %}
-            </select>
-
-            <div class="btn-group" role="group" aria-label="Default button group">
-                <button type="submit" class="btn btn-outline-primary">Показати</button>
-                <a class="btn btn-outline-primary" href="{% url 'animals:animals' %}">Скинути фільтри</a>
+                <div class="col-12 col-lg-4">
+                    <div class="catalog-filter-actions d-flex gap-2">
+                        <button type="submit" class="btn btn-primary">Показати тварин</button>
+                        <a class="btn btn-outline-secondary" href="{% url 'animals:animals' %}">Скинути</a>
+                    </div>
+                </div>
             </div>
         </form>
 
         <div class="row row-cols-1 row-cols-md-2 row-cols-xl-3 g-4">
             {% for animal in animals %}
                 <div class="col">
-                    <article class="card h-100 border-0 shadow-sm overflow-hidden">
+                    <article class="catalog-card card h-100 overflow-hidden">
                         <div class="position-relative">
                             <div class="ratio ratio-4x3">
                                 <img
                                     src="{{ animal.main_photo.url }}"
-                                    class="card-img-top w-100 h-100 object-fit-cover"
+                                    class="catalog-card-photo card-img-top w-100 h-100 object-fit-cover"
                                     alt="Фото {{ animal.name }}"
                                 >
                             </div>
-                            <span class="position-absolute top-0 end-0 m-2 badge rounded-pill {% if animal.is_available %}text-bg-info{% else %}text-bg-secondary{% endif %}">
+                            <span class="catalog-status position-absolute top-0 end-0 badge rounded-pill {% if animal.is_available %}text-bg-info{% else %}text-bg-secondary{% endif %}">
                                 {{ animal.get_adoption_status_display }}
                             </span>
                         </div>
 
                         <div class="card-body d-flex flex-column p-4">
-                            <div class="d-flex justify-content-between align-items-start gap-2 mb-2">
-                                <h2 class="h4 card-title mb-0">
-                                    <a href="{% url 'animals:animal' animal_id=animal.id %}"
-                                       class="stretched-link text-body">
-                                        {{ animal.name }}
-                                    </a>
-                                </h2>
-                                <span class="badge text-bg-light">{{ animal.get_species_display }}</span>
+                            <h2 class="h4 card-title fw-semibold mb-2">
+                                <a href="{% url 'animals:animal' animal_id=animal.id %}"
+                                   class="stretched-link text-body-emphasis">
+                                    {{ animal.name }}
+                                </a>
+                            </h2>
+                            <div class="d-flex flex-wrap gap-2 mb-3">
+                                <span class="catalog-detail-badge badge fw-medium">{{ animal.get_species_display }}</span>
+                                <span class="catalog-detail-badge badge fw-medium">{{ animal.get_sex_display|default:"Стать не вказана" }}</span>
                             </div>
 
                             <p class="fw-semibold text-primary mb-2">{{ animal.age_display }}</p>
-                            <p class="card-text text-body-secondary">
+                            <p class="catalog-card-description card-text text-body-secondary mb-4">
                                 {{ animal.description|truncatewords:18 }}
                             </p>
 
-                            <div class="mt-auto pt-3 border-top">
-                                <span class="small text-body-secondary">
-                                    {{ animal.shelter.name }} · {{ animal.shelter.city }}
-                                </span>
+                            <div class="catalog-card-footer mt-auto pt-3 border-top small text-body-secondary">
+                                {{ animal.shelter.name }} · {{ animal.shelter.city }}
                             </div>
                         </div>
                     </article>
                 </div>
 
             {% empty %}
-                {% if selected_city or selected_species %}
-                    <div class="col-12 w-100">
-                        <div class="alert alert-light border text-center py-4" role="status">
-                            За вибраним фільтром тварин не знайдено.
-                        </div>
+                <div class="col-12 w-100">
+                    <div class="catalog-empty text-center" role="status">
+                        {% if selected_city or selected_species %}
+                            <h2 class="h4 mb-2">Тварин не знайдено</h2>
+                            <p class="text-body-secondary mb-3">Спробуйте змінити фільтри або переглянути всіх тварин.</p>
+                            <a href="{% url 'animals:animals' %}" class="btn btn-outline-primary">Показати всіх тварин</a>
+                        {% else %}
+                            <h2 class="h4 mb-2">Поки що тут немає тварин</h2>
+                            <p class="text-body-secondary mb-0">Зазирніть пізніше — нові підопічні з’являться тут.</p>
+                        {% endif %}
                     </div>
-                {% else %}
-                    <div class="col-12 w-100">
-                        <div class="alert alert-light border text-center py-4" role="status">
-                            Наразі у списку немає тварин. Перевірте сторінку пізніше.
-                        </div>
-                    </div>
-                {% endif %}
+                </div>
 
             {% endfor %}
         </div>
     </section>
-{% endblock %}
-
-{% block extra_js %}
-    <script src="{% static 'js/filterAnimals.js' %}"></script>
 {% endblock %}

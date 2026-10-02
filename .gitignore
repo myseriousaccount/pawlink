@@ -35,3 +35,6 @@ db.sqlite3-shm
 .mypy_cache/
 .coverage
 htmlcov/
+
+# private files
+/private_media/

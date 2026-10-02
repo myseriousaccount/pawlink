@@ -1,3 +1,4 @@
+from django.core.validators import FileExtensionValidator
 from django.db import models
 from django.conf import settings
 
@@ -29,6 +30,16 @@ class Shelter(models.Model):
         blank=True,
         verbose_name='Номер або адреса відділення',
     )
+    payment_recipient = models.CharField(
+        max_length=200,
+        blank=True,
+        verbose_name='Отримувач переказу',
+    )
+    payment_iban = models.CharField(
+        max_length=40,
+        blank=True,
+        verbose_name='IBAN для переказу',
+    )
     phone = models.CharField(max_length=30, verbose_name='Номер телефону')
     email = models.EmailField(max_length=200, verbose_name='Електронна пошта')
     website = models.URLField(max_length=200, blank=True, verbose_name='Вебсайт')
@@ -43,6 +54,7 @@ class Shelter(models.Model):
         blank=True,
         upload_to='shelters/',
         verbose_name='Логотип притулку',
+        validators=[FileExtensionValidator(['jpg', 'jpeg', 'png'])],
     )
 
     owner = models.OneToOneField(
@@ -66,3 +78,7 @@ class Shelter(models.Model):
     @property
     def has_delivery_details(self):
         return bool(self.delivery_service and self.delivery_branch)
+
+    @property
+    def has_payment_details(self):
+        return bool(self.payment_recipient and self.payment_iban)

@@ -1,11 +1,14 @@
 $(document).ready(function() {
-    $('#login-form').on('submit', function(event){
+    $('#animal-form').on('submit', function(event){
         event.preventDefault();
 
         const form = this;
         const formData = new FormData(form)
 
-        $('#login-message').text('');
+        const button = $('button[type="submit"]', form);
+        button.prop('disabled', true);
+
+        $('#animal-form-message').text('');
         $('.field-error', form).text('');
 
         $.ajax({
@@ -20,26 +23,33 @@ $(document).ready(function() {
             },
 
             error: function(xhr) {
+                if (xhr.responseJSON?.redirect_url) {
+                    window.location.href = xhr.responseJSON.redirect_url;
+                    return;
+                }
+
                 const errors = xhr.responseJSON?.errors;
 
-                if (!errors) {
-                    $('#login-message').text('Не вдалося завершити запит.');
-                }
+                $('#animal-form-message').text(
+                    errors ? '' : (xhr.responseJSON?.message || 'Не вдалося виконати запит. Спробуйте ще раз.')
+                );
 
                 if (errors) {
                     for (const field in errors) {
                         const message = errors[field][0].message;
 
                         if (field === '__all__') {
-                            $('#login-message').text(message);
+                            $('#animal-form-message').text(message);
                         } else {
                             const elementId = '#' + field + '-error';
                             $(elementId).text(message);
                         }
                     }
                 }
+            },
+            complete: function() {
+                button.prop('disabled', false);
             }
-
         })
     });
 });

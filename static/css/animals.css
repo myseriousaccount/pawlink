@@ -1,3 +1,212 @@
 a {
     text-decoration: none;
 }
+
+.animals-catalog .catalog-filter,
+.animals-catalog .catalog-empty {
+    border: 1px solid var(--bs-border-color-translucent);
+    border-radius: 1.25rem;
+    background: var(--bs-tertiary-bg);
+}
+
+.animals-catalog .catalog-filter {
+    padding: 1.5rem;
+}
+
+.animals-catalog .catalog-filter-actions .btn {
+    white-space: nowrap;
+}
+
+.animals-catalog .catalog-card {
+    border: 1px solid var(--bs-border-color-translucent);
+    border-radius: 1.25rem;
+    background: var(--bs-body-bg);
+    box-shadow: 0 6px 20px rgba(33, 37, 41, .06);
+    transition: box-shadow .2s ease, transform .2s ease;
+}
+
+.animals-catalog .catalog-card:hover {
+    box-shadow: 0 14px 30px rgba(33, 37, 41, .12);
+    transform: translateY(-3px);
+}
+
+.animals-catalog .catalog-card:focus-within {
+    outline: 3px solid var(--bs-focus-ring-color);
+    outline-offset: 3px;
+}
+
+.animals-catalog .catalog-card .stretched-link:focus-visible {
+    outline: none;
+}
+
+.animals-catalog .catalog-card-photo {
+    transition: transform .25s ease;
+}
+
+.animals-catalog .catalog-card:hover .catalog-card-photo {
+    transform: scale(1.035);
+}
+
+.animals-catalog .catalog-status {
+    margin: .9rem;
+    padding: .5rem .75rem;
+    box-shadow: 0 2px 8px rgba(33, 37, 41, .18);
+}
+
+.animals-catalog .catalog-detail-badge {
+    padding: .5rem .7rem;
+    color: var(--bs-emphasis-color);
+    background: var(--bs-tertiary-bg);
+    border: 1px solid var(--bs-border-color-translucent);
+}
+
+.animals-catalog .catalog-card-description {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
+    overflow: hidden;
+}
+
+.animals-catalog .catalog-card-footer {
+    line-height: 1.5;
+}
+
+.animals-catalog .catalog-empty {
+    padding: 3rem 1.5rem;
+}
+
+.animal-back-link {
+    color: var(--bs-secondary-color);
+}
+
+.animal-back-link:hover {
+    color: var(--bs-primary);
+}
+
+.animal-gallery {
+    border-radius: 1.25rem;
+    box-shadow: 0 12px 32px rgba(33, 37, 41, .1);
+}
+
+.animal-description-section,
+.animal-shelter-summary,
+.animal-support-card {
+    border: 1px solid var(--bs-border-color-translucent);
+    border-radius: 1.25rem;
+    background: var(--bs-body-bg);
+}
+
+.animal-description-section {
+    padding: 1.5rem;
+}
+
+.animal-description {
+    white-space: pre-line;
+    line-height: 1.7;
+}
+
+.animal-overview {
+    border-radius: 1.25rem;
+    background: var(--bs-tertiary-bg);
+}
+
+.animal-overview h1 {
+    overflow-wrap: anywhere;
+}
+
+.animal-favorite-button {
+    width: 3rem;
+    height: 3rem;
+    flex: 0 0 3rem;
+    border-color: var(--bs-border-color);
+    color: var(--bs-danger);
+    background: var(--bs-body-bg);
+    transition: background-color .2s, border-color .2s, transform .2s;
+}
+
+.animal-favorite-button:hover {
+    border-color: var(--bs-danger);
+    color: var(--bs-danger);
+    background: var(--bs-danger-bg-subtle);
+    transform: translateY(-2px);
+}
+
+.animal-favorite-button[aria-pressed="true"] {
+    border-color: var(--bs-danger-border-subtle);
+    background: var(--bs-danger-bg-subtle);
+    color: var(--bs-danger);
+}
+
+.animal-favorite-button:focus-visible {
+    outline: 3px solid var(--bs-focus-ring-color);
+    outline-offset: 2px;
+}
+
+.animal-favorite-button:disabled {
+    cursor: wait;
+    opacity: .65;
+    transform: none;
+}
+
+#favorite-message:empty {
+    display: none;
+}
+
+.animal-facts {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1rem;
+}
+
+.animal-facts > div {
+    padding: 1rem;
+    border: 1px solid var(--bs-border-color-translucent);
+    border-radius: .875rem;
+    background: var(--bs-body-bg);
+}
+
+.animal-contact-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .5rem 1.5rem;
+}
+
+.animal-contact-links a {
+    overflow-wrap: anywhere;
+}
+
+.animal-support-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 20rem), 1fr));
+    gap: 1rem;
+}
+
+.animal-support-card {
+    padding: 1.5rem;
+}
+
+@media (max-width: 575px) {
+    .animals-catalog .catalog-filter {
+        padding: 1.25rem;
+    }
+
+    .animals-catalog .catalog-filter-actions {
+        flex-direction: column;
+    }
+
+    .animal-facts {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .animals-catalog .catalog-card,
+    .animals-catalog .catalog-card-photo {
+        transition: none;
+    }
+
+    .animals-catalog .catalog-card:hover,
+    .animals-catalog .catalog-card:hover .catalog-card-photo {
+        transform: none;
+    }
+}

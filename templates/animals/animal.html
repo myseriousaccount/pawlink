@@ -2,155 +2,189 @@
 {% load static %}
 
 {% block extra_css %}
-<link rel="stylesheet" href="{% static 'css/animals.css' %}">
+    <link rel="stylesheet" href="{% static 'css/animals.css' %}?v=2">
 {% endblock extra_css %}
 
 
 {% block content %}
-    <section class="py-4">
-        <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-4">
-            <div>
-                <p class="text-body-secondary mb-1">
-                    {% if animal.is_available %}Шукає родину{% else %}Інформація про тварину{% endif %}
-                </p>
-                <h1 class="display-5 fw-bold mb-0">{{ animal.name }}</h1>
-            </div>
-            <span class="badge rounded-pill {% if animal.is_available %}text-bg-info{% else %}text-bg-secondary{% endif %} fs-6">
-                {{ animal.get_adoption_status_display }}
-            </span>
-        </div>
+    <section class="animal-page py-4 py-lg-5">
+        <a href="{% url 'animals:animals' %}" class="animal-back-link d-inline-block mb-4">← Усі тварини</a>
 
-        <div class="row g-4 align-items-start">
-            <div class="col-lg-7">
-                <div id="animalGallery" class="carousel slide shadow-sm rounded overflow-hidden">
-                    <div class="carousel-inner rounded">
-
-                    <div class="carousel-item active">
-                        <div class="ratio ratio-4x3">
-                            <img
-                                src="{{ animal.main_photo.url }}"
-                                class="d-block w-100 h-100 object-fit-cover"
-                                alt="Головне фото {{ animal.name }}"
-                            >
-                        </div>
-                    </div>
-
-                    {% for photo in animal.images.all %}
-                        <div class="carousel-item">
+        <div class="row g-4 g-xl-5 align-items-start">
+            <div class="col-lg-5">
+                <div id="animalGallery"
+                     class="animal-gallery carousel slide overflow-hidden bg-body-tertiary"
+                     role="region"
+                     aria-label="Фото тварини {{ animal.name }}">
+                    <div class="carousel-inner">
+                        <div class="carousel-item active">
                             <div class="ratio ratio-4x3">
-                                <img
-                                    src="{{ photo.image.url }}"
-                                    class="d-block w-100 h-100 object-fit-cover"
-                                    alt="Фото {{ animal.name }}"
-                                >
+                                <img src="{{ animal.main_photo.url }}"
+                                     class="d-block w-100 h-100 object-fit-cover"
+                                     alt="Головне фото {{ animal.name }}">
                             </div>
                         </div>
-                    {% endfor %}
 
+                        {% for photo in animal.images.all %}
+                            <div class="carousel-item">
+                                <div class="ratio ratio-4x3">
+                                    <img src="{{ photo.image.url }}"
+                                         class="d-block w-100 h-100 object-fit-cover"
+                                         alt="Фото {{ animal.name }}">
+                                </div>
+                            </div>
+                        {% endfor %}
                     </div>
 
                     {% if animal.images.exists %}
-                        <button
-                            class="carousel-control-prev"
-                            type="button"
-                            data-bs-target="#animalGallery"
-                            data-bs-slide="prev"
-                        >
+                        <button class="carousel-control-prev" type="button"
+                                data-bs-target="#animalGallery" data-bs-slide="prev">
                             <span class="carousel-control-prev-icon"></span>
                             <span class="visually-hidden">Попереднє фото</span>
                         </button>
 
-                        <button
-                            class="carousel-control-next"
-                            type="button"
-                            data-bs-target="#animalGallery"
-                            data-bs-slide="next"
-                        >
+                        <button class="carousel-control-next" type="button"
+                                data-bs-target="#animalGallery" data-bs-slide="next">
                             <span class="carousel-control-next-icon"></span>
                             <span class="visually-hidden">Наступне фото</span>
                         </button>
                     {% endif %}
                 </div>
+
+                <section class="animal-description-section mt-4" aria-labelledby="animal-description-title">
+                    <h2 id="animal-description-title" class="h4 mb-3">Про {{ animal.name }}</h2>
+                    <p class="animal-description mb-0">{{ animal.description }}</p>
+                </section>
             </div>
 
-            <div class="col-lg-5">
+            <div class="col-lg-7">
+                <div class="animal-overview p-4 p-xl-5">
+                    <span class="badge rounded-pill {% if animal.is_available %}text-bg-info{% else %}text-bg-secondary{% endif %} fw-medium px-3 py-2 mb-3">
+                        {{ animal.get_adoption_status_display }}
+                    </span>
 
-                <form id="add-fav-form"
-                      action="{% url 'animals:favorite' animal_id=animal.id %}"
-                      method="post"
-                >
-                    {% csrf_token %}
-
-                    <div id="favorite-message"
-                         class="text-danger mb-3"
-                         role="alert"
-                         aria-live="assertive"></div>
-
-                    {% if  is_favorite %}
-                        <button type="submit">Прибрати з обраного</button>
-                    {% else %}
-                        <button type="submit">Додати в обране</button>
-                    {% endif %}
-                </form>
-
-                <div class="card border-0 shadow-sm mb-4">
-                    <div class="card-body p-4">
-                        <h2 class="h4 card-title mb-3">Про {{ animal.name }}</h2>
-
-                        <dl class="row mb-3">
-                            <dt class="col-sm-4">Вид</dt>
-                            <dd class="col-sm-8">{{ animal.get_species_display }}</dd>
-
-                            <dt class="col-sm-4">Вік</dt>
-                            <dd class="col-sm-8">{{ animal.age_display }}</dd>
-                        </dl>
-
-                        <p class="card-text">{{ animal.description }}</p>
-
-                        {% if animal.is_available %}
-                            <button type="button" class="btn btn-primary btn-lg w-100" data-bs-toggle="modal" data-bs-target="#modalForm">
-                                Подати заявку на адопцію
-                            </button>
-                        {% else %}
-                            <button type="button" class="btn btn-secondary btn-lg w-100" disabled>
-                                Заявки не приймаються
-                            </button>
+                    <div class="d-flex align-items-center justify-content-between gap-3 mb-2">
+                        <h1 class="display-5 fw-bold mb-0">{{ animal.name }}</h1>
+                        {% if not user.is_shelter %}
+                            <form id="add-fav-form"
+                                  action="{% url 'animals:favorite' animal_id=animal.id %}"
+                                  method="post">
+                                {% csrf_token %}
+                                <button type="submit"
+                                        class="btn btn-light rounded-circle d-inline-flex align-items-center justify-content-center p-0 animal-favorite-button"
+                                        aria-pressed="{% if is_favorite %}true{% else %}false{% endif %}"
+                                        aria-label="{% if is_favorite %}Прибрати з обраного{% else %}Додати в обране{% endif %}"
+                                        title="{% if is_favorite %}Прибрати з обраного{% else %}Додати в обране{% endif %}">
+                                    <svg class="animal-favorite-icon" width="24" height="24" viewBox="0 0 24 24"
+                                         fill="{% if is_favorite %}currentColor{% else %}none{% endif %}"
+                                         stroke="currentColor" stroke-width="1.8"
+                                         stroke-linecap="round" stroke-linejoin="round"
+                                         aria-hidden="true" focusable="false">
+                                        <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78L12 21.23l8.84-8.84a5.5 5.5 0 0 0 0-7.78Z"></path>
+                                    </svg>
+                                </button>
+                            </form>
                         {% endif %}
                     </div>
+                    {% if not user.is_shelter %}
+                        <div id="favorite-message" class="text-danger small" role="alert" aria-live="assertive"></div>
+                    {% endif %}
+
+                    <p class="text-body-secondary mb-4">{{ animal.shelter.name }} · {{ animal.shelter.city }}</p>
+
+                    <dl class="animal-facts mb-4">
+                        <div>
+                            <dt class="small text-body-secondary fw-normal mb-1">Вид</dt>
+                            <dd class="fw-semibold mb-0">{{ animal.get_species_display }}</dd>
+                        </div>
+                        <div>
+                            <dt class="small text-body-secondary fw-normal mb-1">Стать</dt>
+                            <dd class="fw-semibold mb-0">{{ animal.get_sex_display|default:"Стать не вказана" }}</dd>
+                        </div>
+                        <div>
+                            <dt class="small text-body-secondary fw-normal mb-1">Вік</dt>
+                            <dd class="fw-semibold mb-0">{{ animal.age_display }}</dd>
+                        </div>
+                    </dl>
+
+                    {% if animal.is_available %}
+                        <button type="button" class="btn btn-primary btn-lg w-100"
+                                data-bs-toggle="modal" data-bs-target="#modalForm">
+                            Подати заявку на адопцію
+                        </button>
+                    {% else %}
+                        <button type="button" class="btn btn-secondary btn-lg w-100" disabled>
+                            Заявки не приймаються
+                        </button>
+                    {% endif %}
                 </div>
 
-                <div class="card border-0 shadow-sm">
-                    <div class="card-body p-4">
-                        <h2 class="h4 card-title mb-3">Притулок</h2>
-                        <h3 class="h5">{{ animal.shelter.name }}</h3>
-                        <p class="text-body-secondary">
-                            {{ animal.shelter.city }}, {{ animal.shelter.address }}
-                        </p>
+                <section class="animal-shelter-summary mt-4 p-4" aria-labelledby="animal-shelter-title">
+                    <h2 id="animal-shelter-title" class="h4 mb-3">Притулок</h2>
+                    <h3 class="h5 mb-1">{{ animal.shelter.name }}</h3>
+                    <p class="text-body-secondary mb-3">{{ animal.shelter.city }}, {{ animal.shelter.address }}</p>
 
-                        <ul class="list-unstyled mb-0">
-                            <li class="mb-2">
-                                Телефон:
-                                <a href="tel:{{ animal.shelter.phone }}">{{ animal.shelter.phone }}</a>
-                            </li>
-                            <li class="mb-2">
-                                Email:
-                                <a href="mailto:{{ animal.shelter.email }}">{{ animal.shelter.email }}</a>
-                            </li>
-                            {% if animal.shelter.website %}
-                                <li>
-                                    <a href="{{ animal.shelter.website }}" target="_blank" rel="noopener noreferrer">
-                                        Відкрити сайт притулку
-                                    </a>
-                                </li>
-                            {% endif %}
-                        </ul>
+                    <div class="animal-contact-links border-top pt-3">
+                        <a href="tel:{{ animal.shelter.phone }}">{{ animal.shelter.phone }}</a>
+                        <a href="mailto:{{ animal.shelter.email }}">{{ animal.shelter.email }}</a>
+                        {% if animal.shelter.website %}
+                            <a href="{{ animal.shelter.website }}" target="_blank" rel="noopener noreferrer">
+                                Сайт притулку
+                            </a>
+                        {% endif %}
                     </div>
-                </div>
+                </section>
             </div>
         </div>
     </section>
 
-    <section class="pb-5" aria-labelledby="animal-needs-title">
+    {% with updates=animal.updates.all %}
+        {% if updates %}
+            <section class="animal-updates pb-5" aria-labelledby="animal-updates-title">
+                <h2 id="animal-updates-title" class="h3 mb-3">Оновлення про {{ animal.name }}</h2>
+                <div class="vstack gap-3">
+                    {% for update in updates %}
+                        <article class="card border-0 rounded-4 shadow-sm">
+                            <div class="card-body p-4">
+                                <time class="small text-body-secondary d-block mb-2"
+                                      datetime="{{ update.created_at|date:'c' }}">
+                                    {{ update.created_at|date:"d.m.Y о H:i" }}
+                                </time>
+                                <p class="mb-0 text-break">{{ update.message|linebreaksbr }}</p>
+                            </div>
+                        </article>
+                    {% endfor %}
+                </div>
+            </section>
+        {% endif %}
+    {% endwith %}
+
+    {% if animal.shelter.has_delivery_details or animal.shelter.has_payment_details %}
+        <section class="animal-support pb-5" aria-labelledby="animal-support-title">
+            <h2 id="animal-support-title" class="h3 mb-3">Як допомогти притулку</h2>
+            <div class="animal-support-grid">
+                {% if animal.shelter.has_delivery_details %}
+                    <div class="animal-support-card">
+                        <h3 class="h5 mb-3">Надіслати речі</h3>
+                        <p class="mb-1"><span class="text-body-secondary">Служба доставки:</span> {{ animal.shelter.delivery_service }}</p>
+                        <p class="mb-1"><span class="text-body-secondary">Місто та відділення:</span> {{ animal.shelter.city }}, {{ animal.shelter.delivery_branch }}</p>
+                        <p class="mb-0"><span class="text-body-secondary">Одержувач:</span> {{ animal.shelter.name }}</p>
+                    </div>
+                {% endif %}
+
+                {% if animal.shelter.has_payment_details %}
+                    <div class="animal-support-card">
+                        <h3 class="h5 mb-3">Переказати кошти</h3>
+                        <p class="mb-1"><span class="text-body-secondary">Отримувач:</span> {{ animal.shelter.payment_recipient }}</p>
+                        <p class="text-break mb-1"><span class="text-body-secondary">IBAN:</span> {{ animal.shelter.payment_iban }}</p>
+                        <p class="small text-body-secondary mb-0">У призначенні платежу вкажіть назву потреби.</p>
+                    </div>
+                {% endif %}
+            </div>
+        </section>
+    {% endif %}
+
+    <section class="animal-needs pb-5" aria-labelledby="animal-needs-title">
         <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-3">
             <div>
                 <h2 id="animal-needs-title" class="h3 mb-1">Потреби {{ animal.name }}</h2>
@@ -167,7 +201,7 @@
                         {% with contributed=need.contributed_amount %}
                             {% widthratio contributed need.target_amount 100 as progress_percent %}
                             <div class="col-md-6 col-xl-4">
-                                <article class="card h-100 border-0 shadow-sm">
+                                <article class="card h-100 border-0 rounded-4 shadow-sm">
                                     <div class="card-body d-flex flex-column p-4">
                                         <div class="d-flex justify-content-between align-items-start gap-2 mb-3">
                                             <span class="badge text-bg-light">{{ need.get_category_display }}</span>
@@ -177,20 +211,6 @@
                                         <h3 class="h5 card-title">{{ need.name }}</h3>
                                         {% if need.description %}
                                             <p class="card-text text-body-secondary">{{ need.description }}</p>
-                                        {% endif %}
-
-                                        {% if need.unit != 'money' and animal.shelter.has_delivery_details %}
-                                            <div class="small text-body-secondary mb-3">
-                                                <p class="fw-semibold mb-1">Куди надіслати допомогу</p>
-                                                <p class="mb-0">
-                                                    {{ animal.shelter.delivery_service }} ·
-                                                    {{ animal.shelter.city }}, {{ animal.shelter.delivery_branch }}
-                                                </p>
-                                                <p class="mb-0">
-                                                    Одержувач: {{ animal.shelter.name }},
-                                                    {{ animal.shelter.phone }}
-                                                </p>
-                                            </div>
                                         {% endif %}
 
                                         <div class="mt-auto">
@@ -213,7 +233,7 @@
 
                                             {% if contributed >= need.target_amount %}
                                                 <span class="badge text-bg-success">Потребу закрито</span>
-                                            {% else %}
+                                            {% elif need.can_accept_contributions %}
                                                 <button
                                                         type="button"
                                                         class="btn btn-outline-primary w-100"
@@ -224,6 +244,8 @@
                                                 </button>
 
                                                 {% include 'support/contribution_modal_form.html' with contribution_form=item.form %}
+                                            {% else %}
+                                                <span class="badge text-bg-secondary">Допомога тимчасово недоступна</span>
                                             {% endif %}
                                         </div>
                                     </div>
@@ -246,7 +268,7 @@
     {% include 'adoptions/adoption_modal_form.html' %}
 {% endblock %}
 {% block extra_js %}
-    <script src="{% static 'js/addToFavorite.js' %}"></script>
+    <script src="{% static 'js/addToFavorite.js' %}?v=2"></script>
     <script src="{% static 'js/adoptionApplication.js' %}"></script>
     <script src="{% static 'js/contributionForm.js' %}"></script>
 {% endblock %}

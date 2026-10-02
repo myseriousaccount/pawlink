@@ -12,7 +12,7 @@ $(document).ready(function () {
             return;
         }
 
-        button.prop('disabled', true)
+        button.prop('disabled', true);
         $('#favorite-message').text('');
 
         $.ajax({
@@ -24,20 +24,24 @@ $(document).ready(function () {
             dataType: 'json',
 
             success: function (response) {
-                if (response.is_favorite) {
-                    button.text('Прибрати з обраного');
-                } else {
-                    button.text('Додати в обране');
-                }
+                const isFavorite = response.is_favorite === true;
+                const label = isFavorite ? 'Прибрати з обраного' : 'Додати в обране';
+
+                button.attr('aria-pressed', String(isFavorite));
+                button.attr('aria-label', label);
+                button.attr('title', label);
+                button.find('svg').attr('fill', isFavorite ? 'currentColor' : 'none');
             },
 
             error: function (xhr) {
-                if (xhr.status === 401) {
+                if (xhr.status === 401 && xhr.responseJSON?.redirect_url) {
                     window.location.href = xhr.responseJSON.redirect_url;
                     return;
                 }
 
-                const message = 'Не вдалося змінити обране. Оновіть сторінку та спробуйте ще раз.'
+                const message = xhr.responseJSON?.message
+                    || 'Не вдалося змінити обране. Оновіть сторінку та спробуйте ще раз.';
+
                 $('#favorite-message').text(message);
 
             },

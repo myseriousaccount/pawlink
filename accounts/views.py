@@ -25,7 +25,6 @@ def register(request):
 
             return JsonResponse({
                 'success': True,
-                'message': 'Реєстрація успішна',
                 'redirect_url': reverse('core:home')
             })
         else:
@@ -80,4 +79,3 @@ def logout(request):
     auth_logout(request)
     messages.success(request, 'Ви вийшли з акаунта.')
     return redirect('accounts:login')
-
