@@ -58,7 +58,7 @@
             {% if user.is_shelter %}
                 <a class="btn btn-outline-primary" href="{% url 'dashboard:shelter_dashboard' %}" >Профіль притулку</a>
             {% else %}
-                <button class="btn btn-outline-primary" type="button">Профіль</button>
+                <a class="btn btn-outline-primary" href="{% url 'dashboard:user_dashboard' %}">Мій кабінет</a>
             {% endif %}
 
           <form class="m-0" method="post" action="{% url 'accounts:logout' %}">

@@ -10,6 +10,12 @@ class AdoptionApplication(models.Model):
     message = models.TextField(
         verbose_name="Мотиваційний текст"
     )
+    phone = models.CharField(
+        max_length=30,
+        blank=True,
+        default='',
+        verbose_name='Контактний телефон',
+    )
     status = models.CharField(
         max_length=15,
         choices=ApplicationStatus.choices,

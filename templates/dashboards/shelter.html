@@ -19,7 +19,11 @@
                         <p class="mb-0">Керуйте профілем, тваринами та заявками на допомогу.</p>
                     </div>
                 </div>
-                <a class="btn btn-light" href="{% url 'shelters:edit_shelter' %}">Редагувати профіль</a>
+                <div class="d-flex flex-column align-items-lg-end gap-2">
+                    <a class="btn btn-light" href="{% url 'shelters:edit_shelter' %}">Редагувати профіль притулку</a>
+                    <a class="btn btn-outline-light" href="{% url 'accounts:edit_user' %}">Редагувати акаунт власника притулку</a>
+                    <span class="small text-white-50">Ім’я, логін та email користувача, який володіє притулком.</span>
+                </div>
             </div>
         </div>
 

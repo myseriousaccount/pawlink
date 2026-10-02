@@ -48,6 +48,7 @@ def application(request, animal_id):
             animal=animal,
             defaults={
                 'message': form.cleaned_data['message'],
+                'phone': form.cleaned_data['phone'],
             },
         )
 

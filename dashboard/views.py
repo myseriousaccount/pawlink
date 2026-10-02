@@ -3,12 +3,12 @@ from django.shortcuts import render, redirect
 from django.core.exceptions import PermissionDenied
 
 from adoptions.models import AdoptionApplication
-from animals.models import Animal
+from animals.models import Animal, AnimalUpdate
 from shelters.models import Shelter
 from support.models import SupportContribution
 
 
-# Create your views here.
+# GET
 def shelter_dashboard(request):
 
     if not request.user.is_authenticated:
@@ -41,4 +41,50 @@ def shelter_dashboard(request):
         'animals_count': animals_count,
         'adoption_application_count': adoption_application_count,
         'pending_contributions_count': pending_contributions_count,
+    })
+
+
+# GET
+def user_dashboard(request):
+
+    if not request.user.is_authenticated:
+        messages.info(request, 'Увійдіть, щоб відкрити панель користувача.')
+        return redirect('accounts:login')
+
+    if request.user.is_shelter:
+        raise PermissionDenied('Панель користувача доступна лише звичайним користувачам.')
+
+    favorites = request.user.favorites.select_related('shelter').order_by('name')
+
+    contributions = (
+        SupportContribution.objects
+        .filter(supporter=request.user)
+        .select_related('need__animal')
+        .order_by('-created_at')
+    )
+    applications = (
+        AdoptionApplication.objects
+        .filter(user=request.user)
+        .select_related('animal')
+        .order_by('-created_at')
+    )
+    updates = (
+        AnimalUpdate.objects
+        .filter(
+            animal__needs__contributions__supporter=request.user,
+            animal__needs__contributions__status=SupportContribution.ContributionStatus.APPROVED,
+        )
+        .select_related('animal')
+        .distinct()
+        .order_by('-created_at')
+    )
+
+    return render(request, 'dashboards/user.html', context={
+        'title': 'Особистий кабінет',
+        'page': 'user dashboard',
+        'app': 'dashboard',
+        'favorites': favorites,
+        'contributions': contributions,
+        'applications': applications,
+        'updates': updates,
     })

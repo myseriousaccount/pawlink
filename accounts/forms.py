@@ -3,6 +3,7 @@ from django.contrib.auth.forms import UserCreationForm
 
 import re
 from django import forms
+from django.forms import ModelForm
 
 User = get_user_model()
 
@@ -53,4 +54,38 @@ class RegisterForm(UserCreationForm):
             'username': 'Логін',
             'email': 'Електронна пошта',
             'role': 'Тип акаунта',
+        }
+
+class EditProfileForm(ModelForm):
+
+    def clean_username(self):
+        username = self.cleaned_data['username']
+
+        if not re.fullmatch(r'[a-zA-Z][a-zA-Z0-9_-]{3,20}', username):
+            raise forms.ValidationError(
+                'Логін має починатися з латинської літери та містити '
+                'від 4 до 21 символу: латинські літери, цифри, _ або -.'
+            )
+
+        return username
+
+    def clean_email(self):
+        email = self.cleaned_data['email']
+
+        if User.objects.filter(email__iexact=email).exclude(pk=self.instance.pk).exists():
+            raise forms.ValidationError(
+                'Користувач із такою електронною поштою вже існує.'
+            )
+        return email
+
+    email = forms.EmailField(required=True)
+
+    class Meta:
+        model = User
+        fields = ['first_name', 'last_name', 'username', 'email']
+        labels = {
+            'first_name': "Ім'я",
+            'last_name': 'Прізвище',
+            'username': 'Логін',
+            'email': 'Електронна пошта',
         }
