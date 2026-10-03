@@ -6,6 +6,9 @@ $(document).ready(function() {
         const formData = new FormData(form)
 
         const button = $('button[type="submit"]', form);
+
+        if (button.prop('disabled')) return;
+
         button.prop('disabled', true);
 
         $('#shelter-form-message').text('');
@@ -46,10 +49,9 @@ $(document).ready(function() {
                         }
                     }
                 }
-            },
-            complete: function() {
+
                 button.prop('disabled', false);
-            }
+            },
         })
     });
 });

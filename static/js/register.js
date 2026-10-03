@@ -7,6 +7,14 @@ $(document).ready(function () {
         // збирання значень з усіх полів форми
         const formData = new FormData(form);
 
+        const button = $('button[type="submit"]', form);
+
+        if (button.prop('disabled')) {
+            return
+        }
+
+        button.prop('disabled', true);
+
         // console.log('Форму перехоплено');
 
         // очищення старих повідолмень перед запитом
@@ -46,8 +54,10 @@ $(document).ready(function () {
                     }
                 }
 
+                button.prop('disabled', false);
+
                 // console.log('Статус помилки:', xhr.status);
-            }
+            },
         });
     });
 });

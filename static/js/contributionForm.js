@@ -8,6 +8,9 @@ $(document).ready(function() {
 
         // блокування кнопки якщо користувач вже відправив форму
         const button = $('button[type="submit"]', form);
+
+        if (button.prop('disabled')) return;
+
         button.prop('disabled', true);
 
         $('.contribution-message', form).text('');
@@ -27,17 +30,17 @@ $(document).ready(function() {
             error: function(xhr) {
 
                 if (xhr.status === 401) {
-                    window.location.href = xhr.responseJSON.redirect_url;
-                    return;
+                    if (xhr.responseJSON?.redirect_url) {
+                        window.location.href = xhr.responseJSON.redirect_url;
+                        return;
+                    }
                 }
 
                 const errors = xhr.responseJSON?.errors;
 
-                if (!errors) {
-                    $('.contribution-message', form).text(
-                        xhr.responseJSON?.message || 'Не вдалося завершити запит.'
-                    );
-                }
+               $('.contribution-message', form).text(
+                    errors ? '' : (xhr.responseJSON?.message || 'Не вдалося виконати запит. Спробуйте ще раз.')
+               );
 
                 if (errors) {
                     for (const field in errors) {
@@ -50,10 +53,9 @@ $(document).ready(function() {
                         }
                     }
                 }
-            },
-            complete: function() {
+
                 button.prop('disabled', false);
-            }
+            },
         })
     });
 });

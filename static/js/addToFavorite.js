@@ -6,6 +6,7 @@ $(document).ready(function () {
 
         const form = this;
         const formData = new FormData(form);
+
         const button = $('button[type="submit"]', form);
 
         if (button.prop('disabled')) {
@@ -13,6 +14,7 @@ $(document).ready(function () {
         }
 
         button.prop('disabled', true);
+
         $('#favorite-message').text('');
 
         $.ajax({
@@ -34,6 +36,7 @@ $(document).ready(function () {
             },
 
             error: function (xhr) {
+
                 if (xhr.status === 401 && xhr.responseJSON?.redirect_url) {
                     window.location.href = xhr.responseJSON.redirect_url;
                     return;

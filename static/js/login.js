@@ -5,6 +5,14 @@ $(document).ready(function() {
         const form = this;
         const formData = new FormData(form)
 
+        const button = $('button[type="submit"]', form);
+
+        if (button.prop('disabled')) {
+            return
+        }
+
+        button.prop('disabled', true);
+
         $('#login-message').text('');
         $('.field-error', form).text('');
 
@@ -38,8 +46,9 @@ $(document).ready(function() {
                         }
                     }
                 }
-            }
 
+                button.prop('disabled', false);
+            },
         })
     });
 });
