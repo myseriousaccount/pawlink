@@ -16,10 +16,28 @@ class ShelterForm(forms.ModelForm):
             'payment_recipient', 'payment_iban',
             'phone', 'email', 'website', 'logo',
         ]
+        widgets = {
+            'phone': forms.TextInput(attrs={
+                'type': 'tel',
+                'autocomplete': 'tel',
+                'placeholder': '+380…',
+            })
+        }
         help_texts = {
             'payment_recipient': 'Вкажіть ім’я або назву отримувача. Ці дані буде видно біля грошових потреб.',
             'payment_iban': 'Вкажіть український IBAN. Його буде видно біля грошових потреб.',
         }
+
+    def clean_phone(self):
+        phone = re.sub(r'\s+', '', self.cleaned_data['phone'])
+
+        if phone:
+            if not re.fullmatch(r'\+?380[0-9]{9}', phone):
+                raise forms.ValidationError('Вкажіть український номер телефону.')
+
+        return phone
+
+
 
     def clean_logo(self):
         logo = self.cleaned_data.get('logo')
@@ -45,7 +63,9 @@ class ShelterForm(forms.ModelForm):
         return logo
 
     def clean_payment_iban(self):
+
         iban = re.sub(r'\s+', '', self.cleaned_data['payment_iban']).upper()
+
         if iban:
             if not re.fullmatch(r'UA[0-9]{27}', iban):
                 raise forms.ValidationError('Вкажіть український IBAN: UA та 27 цифр.')
@@ -60,6 +80,14 @@ class ShelterForm(forms.ModelForm):
         cleaned_data = super().clean()
         recipient = cleaned_data.get('payment_recipient')
         iban = cleaned_data.get('payment_iban')
+        delivery_service = cleaned_data.get('delivery_service')
+        delivery_branch = cleaned_data.get('delivery_branch')
+
+        if delivery_service and not delivery_branch:
+            self.add_error('delivery_branch', 'Вкажіть номер відділення')
+
+        if delivery_branch and not delivery_service:
+            self.add_error('delivery_service', 'Вкажіть назву поштового оператора')
 
         if recipient and not iban and 'payment_iban' not in self.errors:
             self.add_error('payment_iban', 'Вкажіть IBAN отримувача.')

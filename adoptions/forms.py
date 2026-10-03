@@ -1,3 +1,5 @@
+import re
+
 from django import forms
 from .models import AdoptionApplication
 
@@ -21,3 +23,12 @@ class AdoptionApplicationForm(forms.ModelForm):
         help_texts = {
             'phone': 'Необов’язково. Притулок зможе зателефонувати вам щодо заявки.',
         }
+
+    def clean_phone(self):
+        phone = re.sub(r'\s+', '', self.cleaned_data['phone'])
+
+        if phone:
+            if not re.fullmatch(r'\+?380[0-9]{9}', phone):
+                raise forms.ValidationError('Вкажіть український номер телефону.')
+
+        return phone

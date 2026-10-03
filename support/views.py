@@ -166,29 +166,33 @@ def contribution(request, need_id):
     form = SupportContributionForm(request.POST, request.FILES)
 
     if form.is_valid():
+        amount = form.cleaned_data['amount']
 
-        contribution = form.save(commit=False)
-        contribution.supporter = request.user
-        contribution.need = need
-        contribution.save()
+        if need.unit == Need.Unit.QUANTITY and amount != amount.to_integral_value():
+            form.add_error('amount', 'Для одиниці “шт” вкажіть ціле число.')
+        else:
+            contribution = form.save(commit=False)
+            contribution.supporter = request.user
+            contribution.need = need
+            contribution.save()
 
-        messages.success(
-            request,
-            'Підтвердження допомоги надіслано на перевірку.'
-        )
+            messages.success(
+                request,
+                'Підтвердження допомоги надіслано на перевірку.'
+            )
 
-        return JsonResponse({
-            'success': True,
-            'redirect_url': reverse(
-                'animals:animal',
-                args=(need.animal_id,)
-            ),
-        })
-    else:
-        return JsonResponse({
-            'success': False,
-            'errors': form.errors.get_json_data(),
-        }, status=400)
+            return JsonResponse({
+                'success': True,
+                'redirect_url': reverse(
+                    'animals:animal',
+                    args=(need.animal_id,)
+                ),
+            })
+
+    return JsonResponse({
+        'success': False,
+        'errors': form.errors.get_json_data(),
+    }, status=400)
 
 def create_need(request, animal_id):
 

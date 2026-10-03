@@ -12,6 +12,18 @@ class NeedForm(forms.ModelForm):
         model = Need
         fields = ['name', 'description', 'category', 'frequency', 'target_amount', 'unit']
 
+    def clean(self):
+        cleaned_data = super().clean()
+
+        unit = cleaned_data.get('unit')
+        target_amount = cleaned_data.get('target_amount')
+
+        if unit == Need.Unit.QUANTITY and target_amount is not None:
+            if target_amount != target_amount.to_integral_value():
+                self.add_error('target_amount', 'Для одиниці “шт” вкажіть ціле число')
+
+        return cleaned_data
+
 class SupportContributionForm(forms.ModelForm):
     class Meta:
         model = SupportContribution
