@@ -23,6 +23,12 @@ def register(request):
 
             messages.success(request, 'Реєстрація успішна')
 
+            if new_user.is_shelter:
+                return JsonResponse({
+                    'success': True,
+                    'redirect_url': reverse('dashboard:shelter_dashboard')
+                })
+
             return JsonResponse({
                 'success': True,
                 'redirect_url': reverse('core:home')
@@ -52,9 +58,14 @@ def login(request):
 
             messages.success(request, 'Вхід виконано успішно')
 
+            if request.user.is_shelter:
+                return JsonResponse({
+                    'success': True,
+                    'redirect_url': reverse('dashboard:shelter_dashboard')
+                })
             return JsonResponse({
                 'success': True,
-                'redirect_url': reverse('core:home')
+                'redirect_url': reverse('dashboard:user_dashboard')
             })
 
         else:

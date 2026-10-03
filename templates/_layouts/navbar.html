@@ -28,9 +28,9 @@
       <ul class="navbar-nav me-auto mb-3 mb-lg-0 ms-lg-4">
         <li class="nav-item">
           <a
-            class="nav-link {% if request.resolver_match.namespace == 'animals' %}active fw-semibold{% endif %}"
+            class="nav-link {% if request.resolver_match.namespace == 'animals:animals_list' %}active fw-semibold{% endif %}"
             href="{% url 'animals:animals' %}"
-            {% if request.resolver_match.namespace == 'animals' %}aria-current="page"{% endif %}
+            {% if request.resolver_match.namespace == 'animals:animals_list' %}aria-current="page"{% endif %}
           >Тварини</a>
         </li>
         <li class="nav-item">
