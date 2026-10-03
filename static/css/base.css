@@ -1,3 +1,50 @@
 a {
     text-decoration: none;
 }
+
+.dashboard-stat-card {
+    transition: box-shadow .2s ease, transform .2s ease;
+}
+
+.dashboard-stat-card:hover {
+    box-shadow: 0 12px 24px rgba(33, 37, 41, .12) !important;
+    transform: translateY(-2px);
+}
+
+.dashboard-stat-card:focus-visible {
+    outline: 3px solid var(--bs-focus-ring-color);
+    outline-offset: 3px;
+}
+
+.management-table {
+    min-width: 860px;
+}
+
+.management-table--animals {
+    min-width: 990px;
+}
+
+.management-table--applications {
+    min-width: 1060px;
+}
+
+.management-table th,
+.management-table td {
+    vertical-align: middle;
+}
+
+.form-section + .form-section {
+    border-top: 1px solid var(--bs-border-color);
+    margin-top: 2rem;
+    padding-top: 2rem;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .dashboard-stat-card {
+        transition: none;
+    }
+
+    .dashboard-stat-card:hover {
+        transform: none;
+    }
+}

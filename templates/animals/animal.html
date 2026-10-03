@@ -59,7 +59,7 @@
 
             <div class="col-lg-7">
                 <div class="animal-overview p-4 p-xl-5">
-                    <span class="badge rounded-pill {% if animal.is_available %}text-bg-info{% else %}text-bg-secondary{% endif %} fw-medium px-3 py-2 mb-3">
+                    <span class="badge rounded-pill {% if animal.adoption_status == 'available' %}text-bg-success{% elif animal.adoption_status == 'adopted' %}text-bg-primary{% else %}text-bg-secondary{% endif %} fw-medium px-3 py-2 mb-3">
                         {{ animal.get_adoption_status_display }}
                     </span>
 
@@ -205,8 +205,8 @@
                             <article class="card h-100 border-0 rounded-4 shadow-sm">
                                 <div class="card-body d-flex flex-column p-4">
                                     <div class="d-flex justify-content-between align-items-start gap-2 mb-3">
-                                        <span class="badge text-bg-light">{{ need.get_category_display }}</span>
-                                        <span class="badge text-bg-secondary">{{ need.get_frequency_display }}</span>
+                                        <span class="badge text-bg-light border">{{ need.get_category_display }}</span>
+                                        <span class="badge text-bg-light border">{{ need.get_frequency_display }}</span>
                                     </div>
 
                                     <h3 class="h5 card-title">{{ need.name }}</h3>

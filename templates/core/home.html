@@ -2,23 +2,107 @@
 {% load static %}
 
 {% block extra_css %}
-<link rel="stylesheet" href="{% static 'css/core.css' %}">
-{% endblock extra_css %}
-
+    <link rel="stylesheet" href="{% static 'css/animals.css' %}">
+    <link rel="stylesheet" href="{% static 'css/core.css' %}">
+{% endblock %}
 
 {% block content %}
-
-    <div class="px-4 py-5 my-5 text-center">
-        <h1 class="display-5 fw-bold text-body-emphasis">
-            Допомагаємо тваринам знайти люблячу родину
-        </h1>
-        <div class="col-lg-6 mx-auto">
-          <p class="lead mb-4">
-            Pawlink об’єднує притулки, волонтерів і людей, які хочуть допомагати
-            тваринам. Знайдіть нового друга, підтримайте перевірений притулок
-            або зробіть внесок у потреби тварин.
-          </p>
+    <section class="home-hero my-4 my-lg-5 p-4 p-md-5" aria-labelledby="home-title">
+        <div class="row align-items-center g-4">
+            <div class="col-lg-7">
+                <p class="home-eyebrow fw-semibold mb-3">Pawlink · допомога тваринам</p>
+                <h1 id="home-title" class="display-5 fw-bold mb-3">Допоможіть тварині знайти дім</h1>
+                <p class="lead mb-4">
+                    Познайомтеся з підопічними перевірених притулків, подайте заявку на адопцію
+                    або допоможіть притулку забезпечити тварину необхідним.
+                </p>
+                <div class="d-flex flex-wrap gap-2">
+                    <a href="{% url 'animals:animals' %}" class="btn btn-light btn-lg">Переглянути тварин</a>
+                    <a href="#how-it-works" class="btn btn-outline-light btn-lg">Як це працює</a>
+                </div>
+            </div>
+            <div class="col-lg-5">
+                <div class="home-hero-note p-4 p-lg-5">
+                    <p class="h4 mb-3">Кожна дія має значення</p>
+                    <p class="mb-0">Знайдіть друга, зв’яжіться з притулком або дізнайтеся,
+                        яку допомогу можна надати просто зараз.</p>
+                </div>
+            </div>
         </div>
-      </div>
+    </section>
+
+    <section id="how-it-works" class="py-4 py-lg-5" aria-labelledby="how-title">
+        <div class="mb-4">
+            <h2 id="how-title" class="h2 mb-2">Як допомогти</h2>
+            <p class="text-body-secondary mb-0">Оберіть зручний для вас спосіб підтримки.</p>
+        </div>
+        <div class="row g-3">
+            <div class="col-md-4">
+                <div class="home-step h-100 p-4">
+                    <span class="home-step-number" aria-hidden="true">01</span>
+                    <h3 class="h5 mt-3">Познайомтеся</h3>
+                    <p class="text-body-secondary mb-0">Перегляньте картки тварин і виберіть того, з ким хочете познайомитися ближче.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="home-step h-100 p-4">
+                    <span class="home-step-number" aria-hidden="true">02</span>
+                    <h3 class="h5 mt-3">Подайте заявку</h3>
+                    <p class="text-body-secondary mb-0">Розкажіть притулку про себе та стежте за станом заявки в особистому кабінеті.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="home-step h-100 p-4">
+                    <span class="home-step-number" aria-hidden="true">03</span>
+                    <h3 class="h5 mt-3">Допоможіть тварині</h3>
+                    <p class="text-body-secondary mb-0">Перегляньте, що потрібно тварині, надайте допомогу й надішліть підтвердження притулку.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="py-4 py-lg-5" aria-labelledby="featured-title">
+        <div class="d-flex flex-wrap justify-content-between align-items-end gap-3 mb-4">
+            <div>
+                <h2 id="featured-title" class="h2 mb-2">Зараз шукають дім</h2>
+                <p class="text-body-secondary mb-0">Тварини перевірених притулків, готові до знайомства.</p>
+            </div>
+            <a href="{% url 'animals:animals' %}" class="btn btn-outline-primary">Усі тварини</a>
+        </div>
+        <div class="row row-cols-1 row-cols-md-2 row-cols-xl-3 g-4">
+            {% for animal in featured_animals %}
+                <div class="col">{% include 'animals/animal_card.html' %}</div>
+            {% empty %}
+                <div class="col-12">
+                    <div class="home-empty p-4 p-md-5 text-center" role="status">
+                        <p class="h5 mb-2">Поки що немає тварин, які шукають дім</p>
+                        <p class="text-body-secondary mb-0">Зазирніть пізніше або перегляньте весь каталог.</p>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </section>
+
+    {% if not user.is_authenticated or user.is_shelter %}
+        <section class="home-shelter-cta my-4 my-lg-5 p-4 p-md-5" aria-labelledby="shelter-cta-title">
+            <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
+                <div>
+                    <h2 id="shelter-cta-title" class="h3 mb-2">Для притулків</h2>
+                    <p class="text-body-secondary mb-0">
+                        {% if user.is_shelter %}
+                            Керуйте профілем, тваринами та їхніми потребами у своїй панелі.
+                        {% else %}
+                            Створіть профіль притулку, щоб після перевірки розповідати про тварин та їхні потреби.
+                        {% endif %}
+                    </p>
+                </div>
+                {% if user.is_shelter %}
+                    <a href="{% url 'dashboard:shelter_dashboard' %}" class="btn btn-primary text-nowrap">Панель притулку</a>
+                {% else %}
+                    <a href="{% url 'accounts:register' %}" class="btn btn-primary text-nowrap">Зареєструвати притулок</a>
+                {% endif %}
+            </div>
+        </section>
+    {% endif %}
 
 {% endblock %}

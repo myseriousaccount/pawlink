@@ -63,7 +63,7 @@ def animal_detail(request, animal_id):
 
 
     return render(request, 'animals/animal.html',context={
-        'title': 'Тварина',
+        'title': animal.name,
         'page': 'animal',
         'app': 'animals',
         'animal': animal,

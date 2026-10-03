@@ -16,8 +16,8 @@
         </div>
 
         <div class="card border-0 shadow-sm">
-            <div class="table-responsive">
-                <table class="table table-hover align-middle mb-0">
+            <div class="table-responsive" role="region" aria-label="Таблиця тварин притулку" tabindex="0">
+                <table class="table table-hover align-middle mb-0 management-table management-table--animals">
                     <thead class="table-light">
                         <tr>
                             <th scope="col" class="ps-4">Фото</th>
@@ -49,7 +49,7 @@
                                 <td>{{ animal.get_sex_display|default:"Стать не вказана" }}</td>
                                 <td>{{ animal.age_display }}</td>
                                 <td>
-                                    <span class="badge rounded-pill text-bg-light border fw-normal">
+                                    <span class="badge rounded-pill fw-medium {% if animal.adoption_status == 'available' %}text-bg-success{% elif animal.adoption_status == 'adopted' %}text-bg-primary{% else %}text-bg-secondary{% endif %}">
                                         {{ animal.get_adoption_status_display }}
                                     </span>
                                 </td>

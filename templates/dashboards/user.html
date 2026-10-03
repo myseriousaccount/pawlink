@@ -4,7 +4,13 @@
     <section class="py-4 py-lg-5">
         <div class="rounded-4 bg-primary text-white p-4 p-lg-5 mb-4">
             <h1 class="display-6 fw-semibold mb-2">Особистий кабінет</h1>
-            <p class="mb-0">Ваші обрані тварини, допомога, заявки на адопцію та новини про тварин, яким ви допомогли.</p>
+            <p class="mb-3">Ваші обрані тварини, допомога, заявки на адопцію та новини про тварин, яким ви допомогли.</p>
+            <nav class="d-flex flex-wrap gap-2" aria-label="Розділи особистого кабінету">
+                <a href="#favorites-title" class="btn btn-sm btn-outline-light">Обрані</a>
+                <a href="#contributions-title" class="btn btn-sm btn-outline-light">Допомога</a>
+                <a href="#applications-title" class="btn btn-sm btn-outline-light">Заявки</a>
+                <a href="#updates-title" class="btn btn-sm btn-outline-light">Оновлення</a>
+            </nav>
         </div>
 
         <section class="card border-0 shadow-sm mb-5" aria-labelledby="account-title">
@@ -47,7 +53,11 @@
                             <div class="card-body d-flex flex-column">
                                 <h3 class="h5 card-title">{{ animal.name }}</h3>
                                 <p class="small text-body-secondary mb-2">{{ animal.shelter.name }}</p>
-                                <p class="mb-3">{{ animal.get_adoption_status_display }}</p>
+                                <p class="mb-3">
+                                    <span class="badge rounded-pill {% if animal.adoption_status == 'available' %}text-bg-success{% elif animal.adoption_status == 'adopted' %}text-bg-primary{% else %}text-bg-secondary{% endif %}">
+                                        {{ animal.get_adoption_status_display }}
+                                    </span>
+                                </p>
                                 <a href="{% url 'animals:animal' animal_id=animal.pk %}"
                                    class="btn btn-outline-primary mt-auto align-self-start">Переглянути тварину</a>
                             </div>
@@ -93,7 +103,7 @@
                                     <td class="text-nowrap">{{ contribution.amount|floatformat:"-2" }} {{ contribution.need.get_unit_display }}</td>
                                     <td class="text-nowrap">{{ contribution.created_at|date:"d.m.Y" }}</td>
                                     <td class="pe-4">
-                                        <span class="badge {% if contribution.status == 'approved' %}text-bg-success{% elif contribution.status == 'rejected' %}text-bg-secondary{% else %}text-bg-warning{% endif %}">
+                                        <span class="badge {% if contribution.status == 'approved' %}text-bg-success{% elif contribution.status == 'rejected' %}text-bg-danger{% else %}text-bg-warning{% endif %}">
                                             {{ contribution.get_status_display }}
                                         </span>
                                     </td>
@@ -124,7 +134,7 @@
                                             {{ application.animal.name }}
                                         {% endif %}
                                     </h3>
-                                    <span class="badge {% if application.status == 'approved' %}text-bg-success{% elif application.status == 'rejected' %}text-bg-secondary{% else %}text-bg-warning{% endif %}">
+                                    <span class="badge {% if application.status == 'approved' %}text-bg-success{% elif application.status == 'rejected' %}text-bg-danger{% else %}text-bg-warning{% endif %}">
                                         {{ application.get_status_display }}
                                     </span>
                                 </div>

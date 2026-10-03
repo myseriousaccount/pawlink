@@ -1,0 +1,8 @@
+{% load django_bootstrap5 %}
+
+<div class="mb-3">
+    {% bootstrap_field field %}
+    <div id="{{ field.name }}-error"
+         class="field-error text-danger small"
+         aria-live="polite"></div>
+</div>

@@ -11,17 +11,15 @@
         </div>
 
         <div class="card border-0 shadow-sm">
-            <div class="table-responsive">
-                <table class="table table-hover align-middle mb-0">
+            <div class="table-responsive" role="region" aria-label="Таблиця підтверджень допомоги" tabindex="0">
+                <table class="table table-hover align-middle mb-0 management-table">
                     <thead class="table-light">
                         <tr>
                             <th scope="col" class="ps-4">Тварина і потреба</th>
-                            <th scope="col">Благодійник</th>
+                            <th scope="col">Благодійник і дата</th>
                             <th scope="col">Обсяг допомоги</th>
-                            <th scope="col">Дата</th>
                             <th scope="col">Статус</th>
-                            <th scope="col">Підтвердження</th>
-                            <th scope="col" class="pe-4">Дії</th>
+                            <th scope="col" class="pe-4">Підтвердження та дії</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -34,60 +32,50 @@
                                     </a>
                                     <span class="small text-body-secondary">{{ contribution.need.name }}</span>
                                 </td>
-                                <td>{{ contribution.supporter.username }}</td>
+                                <td>
+                                    <span class="fw-medium d-block">{{ contribution.supporter.username }}</span>
+                                    <time class="small text-body-secondary text-nowrap"
+                                          datetime="{{ contribution.created_at|date:'c' }}">
+                                        {{ contribution.created_at|date:"d.m.Y H:i" }}
+                                    </time>
+                                </td>
                                 <td class="text-nowrap">
                                     {{ contribution.amount }} {{ contribution.need.get_unit_display }}
                                 </td>
-                                <td class="text-nowrap">{{ contribution.created_at|date:"d.m.Y H:i" }}</td>
                                 <td>
-                                    <span class="badge rounded-pill fw-medium {% if contribution.status == 'pending' %}text-bg-warning{% elif contribution.status == 'approved' %}text-bg-success{% else %}text-bg-secondary{% endif %}">
+                                    <span class="badge rounded-pill fw-medium {% if contribution.status == 'pending' %}text-bg-warning{% elif contribution.status == 'approved' %}text-bg-success{% else %}text-bg-danger{% endif %}">
                                         {{ contribution.get_status_display }}
                                     </span>
                                 </td>
-                                <td>
-                                    {% if contribution.proof %}
-                                        <a href="{% url 'support:show_proof' contribution.pk %}"
-                                           class="btn btn-sm btn-outline-primary text-nowrap" target="_blank" rel="noopener">
-                                            Переглянути файл
-                                        </a>
-                                    {% else %}
-                                        <span class="small text-body-secondary">Файл відсутній</span>
-                                    {% endif %}
-                                </td>
                                 <td class="pe-4">
-                                    {% if contribution.status == 'pending' %}
-                                        <form id="contribution-review-form"
-                                              method="post"
-                                              action="{% url 'support:review_contribution' contribution.pk %}"
-                                        >
-                                            {% csrf_token %}
-
-                                            <div class="d-flex flex-wrap gap-2">
-                                                <button
-                                                        type="submit"
-                                                        name="decision"
-                                                        value="approved"
-                                                        class="btn btn-sm btn-outline-success">
-                                                    Підтвердити
-                                                </button>
-                                                <button
-                                                        type="submit"
-                                                        name="decision"
-                                                        value="rejected"
-                                                        class="btn btn-sm btn-outline-danger">
-                                                    Відхилити
-                                                </button>
-                                            </div>
-                                        </form>
-
-                                    {% else %}
-                                        <span class="small text-body-secondary">Розглянуто</span>
-                                    {% endif %}
+                                    <div class="d-flex flex-column align-items-start gap-2">
+                                        {% if contribution.proof %}
+                                            <a href="{% url 'support:show_proof' contribution.pk %}"
+                                               class="btn btn-sm btn-outline-primary text-nowrap" target="_blank" rel="noopener">
+                                                Переглянути файл
+                                            </a>
+                                        {% else %}
+                                            <span class="small text-body-secondary">Файл відсутній</span>
+                                        {% endif %}
+                                        {% if contribution.status == 'pending' %}
+                                            <form id="contribution-review-form-{{ contribution.pk }}"
+                                                  method="post"
+                                                  action="{% url 'support:review_contribution' contribution.pk %}">
+                                                {% csrf_token %}
+                                                <div class="d-flex flex-wrap gap-2">
+                                                    <button type="submit" name="decision" value="approved"
+                                                            class="btn btn-sm btn-outline-success">Підтвердити</button>
+                                                    <button type="submit" name="decision" value="rejected"
+                                                            class="btn btn-sm btn-outline-danger">Відхилити</button>
+                                                </div>
+                                            </form>
+                                        {% endif %}
+                                    </div>
                                 </td>
                             </tr>
                         {% empty %}
                             <tr>
-                                <td colspan="7" class="text-center text-body-secondary py-5">
+                                <td colspan="5" class="text-center text-body-secondary py-5">
                                     Підтверджень допомоги ще немає.
                                 </td>
                             </tr>

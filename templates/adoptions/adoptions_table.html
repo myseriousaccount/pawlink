@@ -11,8 +11,8 @@
         </div>
 
         <div class="card border-0 shadow-sm">
-            <div class="table-responsive">
-                <table class="table table-hover align-middle mb-0">
+            <div class="table-responsive" role="region" aria-label="Таблиця заявок на адопцію" tabindex="0">
+                <table class="table table-hover align-middle mb-0 management-table management-table--applications">
                     <thead class="table-light">
                         <tr>
                             <th scope="col" class="ps-4">Тварина</th>
@@ -33,9 +33,12 @@
                                     </a>
                                 </td>
                                 <td>
+                                    <span class="badge rounded-pill fw-medium mb-2 {% if application.animal.adoption_status == 'available' %}text-bg-success{% elif application.animal.adoption_status == 'adopted' %}text-bg-primary{% else %}text-bg-secondary{% endif %}">
+                                        {{ application.animal.get_adoption_status_display }}
+                                    </span>
                                     <form method="post"
                                           action="{% url 'animals:change_animal_status' animal_id=application.animal_id %}"
-                                          class="d-flex align-items-center gap-1">
+                                          class="d-flex align-items-center gap-1 flex-nowrap">
                                         {% csrf_token %}
                                         <input type="hidden" name="return_to" value="applications">
                                         <select id="animal-status-application-{{ application.pk }}"
@@ -78,7 +81,7 @@
                                     <span class="small text-body-secondary">{{ application.created_at|date:"H:i" }}</span>
                                 </td>
                                 <td>
-                                    <span class="badge rounded-pill fw-medium {% if application.status == 'pending' %}text-bg-warning{% elif application.status == 'approved' %}text-bg-success{% else %}text-bg-secondary{% endif %}">
+                                    <span class="badge rounded-pill fw-medium {% if application.status == 'pending' %}text-bg-warning{% elif application.status == 'approved' %}text-bg-success{% else %}text-bg-danger{% endif %}">
                                         {{ application.get_status_display }}
                                     </span>
                                 </td>
@@ -121,7 +124,7 @@
                             <tr>
                                 <td colspan="6" class="px-4 pt-0 pb-3">
                                     <details>
-                                        <summary class="small">Переглянути звернення, коментар і нотатки</summary>
+                                        <summary class="small fw-medium">Переглянути звернення, коментар і нотатки</summary>
                                         <div class="row g-3 mt-1">
                                             <div class="col-md-6">
                                                 <h2 class="h6 mb-2">Звернення заявника</h2>

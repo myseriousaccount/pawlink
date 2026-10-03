@@ -51,45 +51,11 @@
             </div>
         </form>
 
+        <h2 class="visually-hidden">Результати пошуку</h2>
         <div class="row row-cols-1 row-cols-md-2 row-cols-xl-3 g-4">
             {% for animal in animals %}
                 <div class="col">
-                    <article class="catalog-card card h-100 overflow-hidden">
-                        <div class="position-relative">
-                            <div class="ratio ratio-4x3">
-                                <img
-                                    src="{{ animal.main_photo.url }}"
-                                    class="catalog-card-photo card-img-top w-100 h-100 object-fit-cover"
-                                    alt="Фото {{ animal.name }}"
-                                >
-                            </div>
-                            <span class="catalog-status position-absolute top-0 end-0 badge rounded-pill {% if animal.is_available %}text-bg-info{% else %}text-bg-secondary{% endif %}">
-                                {{ animal.get_adoption_status_display }}
-                            </span>
-                        </div>
-
-                        <div class="card-body d-flex flex-column p-4">
-                            <h2 class="h4 card-title fw-semibold mb-2">
-                                <a href="{% url 'animals:animal' animal_id=animal.id %}"
-                                   class="stretched-link text-body-emphasis">
-                                    {{ animal.name }}
-                                </a>
-                            </h2>
-                            <div class="d-flex flex-wrap gap-2 mb-3">
-                                <span class="catalog-detail-badge badge fw-medium">{{ animal.get_species_display }}</span>
-                                <span class="catalog-detail-badge badge fw-medium">{{ animal.get_sex_display|default:"Стать не вказана" }}</span>
-                            </div>
-
-                            <p class="fw-semibold text-primary mb-2">{{ animal.age_display }}</p>
-                            <p class="catalog-card-description card-text text-body-secondary mb-4">
-                                {{ animal.description|truncatewords:18 }}
-                            </p>
-
-                            <div class="catalog-card-footer mt-auto pt-3 border-top small text-body-secondary">
-                                {{ animal.shelter.name }} · {{ animal.shelter.city }}
-                            </div>
-                        </div>
-                    </article>
+                    {% include 'animals/animal_card.html' %}
                 </div>
 
             {% empty %}

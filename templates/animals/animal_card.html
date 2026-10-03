@@ -1,0 +1,30 @@
+<article class="animal-card card h-100 overflow-hidden">
+    <div class="position-relative">
+        <div class="ratio ratio-4x3">
+            <img src="{{ animal.main_photo.url }}"
+                 class="animal-card-photo card-img-top w-100 h-100 object-fit-cover"
+                 alt="Фото {{ animal.name }}">
+        </div>
+        <span class="animal-card-status position-absolute top-0 end-0 badge rounded-pill {% if animal.adoption_status == 'available' %}text-bg-success{% elif animal.adoption_status == 'adopted' %}text-bg-primary{% else %}text-bg-secondary{% endif %}">
+            {{ animal.get_adoption_status_display }}
+        </span>
+    </div>
+
+    <div class="card-body d-flex flex-column p-4">
+        <h3 class="h4 card-title fw-semibold mb-2">
+            <a href="{% url 'animals:animal' animal_id=animal.id %}"
+               class="stretched-link text-body-emphasis">{{ animal.name }}</a>
+        </h3>
+        <div class="d-flex flex-wrap gap-2 mb-3">
+            <span class="animal-detail-chip badge fw-medium">{{ animal.get_species_display }}</span>
+            <span class="animal-detail-chip badge fw-medium">{{ animal.get_sex_display|default:"Стать не вказана" }}</span>
+        </div>
+        <p class="fw-semibold text-primary mb-2">{{ animal.age_display }}</p>
+        <p class="animal-card-description card-text text-body-secondary mb-4">
+            {{ animal.description|truncatewords:18 }}
+        </p>
+        <div class="animal-card-footer mt-auto pt-3 border-top small text-body-secondary">
+            {{ animal.shelter.name }} · {{ animal.shelter.city }}
+        </div>
+    </div>
+</article>
