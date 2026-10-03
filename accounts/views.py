@@ -8,11 +8,8 @@ from django.views.decorators.http import require_POST
 
 from .forms import RegisterForm, EditProfileForm
 from django.http import JsonResponse
-from django.contrib.auth import get_user_model
 from django.urls import reverse
 
-# custom user model
-User = get_user_model()
 
 def register(request):
     if request.method == 'POST':
@@ -20,7 +17,6 @@ def register(request):
         if form.is_valid():
             new_user = form.save()
             auth_login(request, new_user)
-
             messages.success(request, 'Реєстрація успішна')
 
             if new_user.is_shelter:

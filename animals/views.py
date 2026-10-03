@@ -1,4 +1,3 @@
-from django.contrib.auth.password_validation import password_changed
 from django.core.exceptions import PermissionDenied
 from django.http import JsonResponse
 from django.shortcuts import render, get_object_or_404, redirect
