@@ -46,7 +46,7 @@ def animal_detail(request, animal_id):
 
     application_form = AdoptionApplicationForm()
     needs_with_forms = []
-    for need in animal.needs.all():
+    for need in animal.needs.filter(is_active=True):
         needs_with_forms.append({
             'need': need,
             'form': SupportContributionForm(

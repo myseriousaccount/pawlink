@@ -199,64 +199,62 @@
         <div class="row g-4">
             {% for item in needs %}
                 {% with need=item.need %}
-                    {% if need.is_active %}
-                        {% with contributed=need.contributed_amount %}
-                            {% widthratio contributed need.target_amount 100 as progress_percent %}
-                            <div class="col-md-6 col-xl-4">
-                                <article class="card h-100 border-0 rounded-4 shadow-sm">
-                                    <div class="card-body d-flex flex-column p-4">
-                                        <div class="d-flex justify-content-between align-items-start gap-2 mb-3">
-                                            <span class="badge text-bg-light">{{ need.get_category_display }}</span>
-                                            <span class="badge text-bg-secondary">{{ need.get_frequency_display }}</span>
-                                        </div>
-
-                                        <h3 class="h5 card-title">{{ need.name }}</h3>
-                                        {% if need.description %}
-                                            <p class="card-text text-body-secondary">{{ need.description }}</p>
-                                        {% endif %}
-
-                                        <div class="mt-auto">
-                                            <div class="d-flex justify-content-between small mb-2">
-                                                <span>Зібрано</span>
-                                                <strong>
-                                                    {{ contributed|floatformat:"-2" }} / {{ need.target_amount|floatformat:"-2" }}
-                                                    {{ need.get_unit_display }}
-                                                </strong>
-                                            </div>
-
-                                            <div class="progress mb-3" role="progressbar"
-                                                 aria-label="Прогрес потреби {{ need.name }}"
-                                                 aria-valuemin="0" aria-valuemax="100"
-                                                 aria-valuenow="{% if contributed >= need.target_amount %}100{% else %}{{ progress_percent }}{% endif %}">
-                                                <div class="progress-bar"
-                                                     style="width: {% if contributed >= need.target_amount %}100{% else %}{{ progress_percent }}{% endif %}%">
-                                                </div>
-                                            </div>
-
-                                            {% if contributed >= need.target_amount %}
-                                                <span class="badge text-bg-success">Потребу закрито</span>
-                                            {% elif need.can_accept_contributions %}
-                                                {% if not user.is_shelter %}
-                                                    <button
-                                                            type="button"
-                                                            class="btn btn-outline-primary w-100"
-                                                            data-bs-toggle="modal"
-                                                            data-bs-target="#contribModalForm-{{ need.id }}"
-                                                    >
-                                                        Допомогти
-                                                    </button>
-
-                                                    {% include 'support/contribution_modal_form.html' with contribution_form=item.form %}
-                                                {% endif %}
-                                            {% else %}
-                                                <span class="badge text-bg-secondary">Допомога тимчасово недоступна</span>
-                                            {% endif %}
-                                        </div>
+                    {% with contributed=need.contributed_amount %}
+                        {% widthratio contributed need.target_amount 100 as progress_percent %}
+                        <div class="col-md-6 col-xl-4">
+                            <article class="card h-100 border-0 rounded-4 shadow-sm">
+                                <div class="card-body d-flex flex-column p-4">
+                                    <div class="d-flex justify-content-between align-items-start gap-2 mb-3">
+                                        <span class="badge text-bg-light">{{ need.get_category_display }}</span>
+                                        <span class="badge text-bg-secondary">{{ need.get_frequency_display }}</span>
                                     </div>
-                                </article>
-                            </div>
-                        {% endwith %}
-                    {% endif %}
+
+                                    <h3 class="h5 card-title">{{ need.name }}</h3>
+                                    {% if need.description %}
+                                        <p class="card-text text-body-secondary">{{ need.description }}</p>
+                                    {% endif %}
+
+                                    <div class="mt-auto">
+                                        <div class="d-flex justify-content-between small mb-2">
+                                            <span>Зібрано</span>
+                                            <strong>
+                                                {{ contributed|floatformat:"-2" }} / {{ need.target_amount|floatformat:"-2" }}
+                                                {{ need.get_unit_display }}
+                                            </strong>
+                                        </div>
+
+                                        <div class="progress mb-3" role="progressbar"
+                                             aria-label="Прогрес потреби {{ need.name }}"
+                                             aria-valuemin="0" aria-valuemax="100"
+                                             aria-valuenow="{% if contributed >= need.target_amount %}100{% else %}{{ progress_percent }}{% endif %}">
+                                            <div class="progress-bar"
+                                                 style="width: {% if contributed >= need.target_amount %}100{% else %}{{ progress_percent }}{% endif %}%">
+                                            </div>
+                                        </div>
+
+                                        {% if contributed >= need.target_amount %}
+                                            <span class="badge text-bg-success">Потребу закрито</span>
+                                        {% elif need.can_accept_contributions %}
+                                            {% if not user.is_shelter %}
+                                                <button
+                                                        type="button"
+                                                        class="btn btn-outline-primary w-100"
+                                                        data-bs-toggle="modal"
+                                                        data-bs-target="#contribModalForm-{{ need.id }}"
+                                                >
+                                                    Допомогти
+                                                </button>
+
+                                                {% include 'support/contribution_modal_form.html' with contribution_form=item.form %}
+                                            {% endif %}
+                                        {% else %}
+                                            <span class="badge text-bg-secondary">Допомога тимчасово недоступна</span>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </article>
+                        </div>
+                    {% endwith %}
                 {% endwith %}
             {% empty %}
                 <div class="col-12">
